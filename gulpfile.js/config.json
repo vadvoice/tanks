@@ -4,7 +4,7 @@
       "server": {
         "baseDir": "dest"
       },
-      "browser": ["google-chrome", "firefox", "opera"]
+      "browser": ["google-chrome"]
     },
     "root": {
       "src": "./src",
