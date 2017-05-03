@@ -141,7 +141,7 @@ window.GameScene = class {
   constructor(game) {
     this.game = game;
     this.gameMap();
-    this.posX = game.canvas.width / 2 - 75; // Don't use pixels in game logic! This is only for example
+    this.posX = game.canvas.width / 2 - 88; // Don't use pixels in game logic! This is only for example
     this.posY = game.canvas.height - 50;
     this.coords = {
       0: this.posX,
@@ -149,16 +149,14 @@ window.GameScene = class {
     }
   }
   update(dt) {
-    if (this.game.keys['87']) this.posY-=5; // W
-    if (this.game.keys['83']) this.posY+=5; // S
-    if (this.game.keys['65']) this.posX-=5; // A
-    if (this.game.keys['68']) this.posX+=5; // D
+    if (this.game.keys['87']) this.posY-=2; // W
+    if (this.game.keys['83']) this.posY+=2; // S
+    if (this.game.keys['65']) this.posX-=2; // A
+    if (this.game.keys['68']) this.posX+=2; // D
     if (this.game.keys['27']) this.game.setScene(MenuScene); // Back to menu
   }
   render(dt, game) {
-    ctx.fillStyle = "#000"
-    ctx.fillRect(0,0,canvas.width,canvas.height)
-    this.map = this.gameMap();
+    this.gameMap();
     // X verification
     if ( this.posX < 44 ) {
       this.posX = 44;
@@ -252,9 +250,10 @@ window.GameScene = class {
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
+    this.game.map = map;
     let cellSize = 44;
     ctx.fillStyle = '#ccc';
     ctx.fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
@@ -276,38 +275,44 @@ window.GameScene = class {
 
   // draw brick cell
   drawBrick(x, y, cellSize) {
-    // Отрисовка основного цвета кирпича
+    // drawing main background brick
     ctx.fillStyle = '#FFA500';
     ctx.fillRect(x, y, cellSize / 2, cellSize / 2);
-    // Отрисовка теней
+    // drawing shadows
     ctx.fillStyle = '#CD8500';
     ctx.fillRect(x, y, cellSize / 2, cellSize / 16);
     ctx.fillRect(x, y + cellSize / 4, cellSize / 2, cellSize / 16);
     ctx.fillRect(x + cellSize / 4, y, cellSize / 16, cellSize / 4);
     ctx.fillRect(x + cellSize / 16, y + cellSize / 4, cellSize / 16, cellSize / 4);
-    // Отрисовка раствора между кирпичами
+    // drawing separator between bricks
     ctx.fillStyle = '#D3D3D3';
     ctx.fillRect(x, y + cellSize / 4 - cellSize / 16, cellSize / 2, cellSize / 16);
     ctx.fillRect(x, y + cellSize / 2 - cellSize / 16, cellSize / 2, cellSize / 16);
     ctx.fillRect(x + cellSize / 4 - cellSize / 16, y, cellSize / 16, cellSize / 4);
     ctx.fillRect(x, y + cellSize / 4 - cellSize / 16, cellSize / 16, cellSize / 4);
   }
-  // wraw concrit cell
+  // draw concrit cell
   drawHardBrick(x, y,cellSize) {
-    // Отрисовка основного фона
+    // drawing main background
     ctx.fillStyle = '#cccccc';
     ctx.fillRect(x, y, cellSize / 2, cellSize / 2);
-    // Отрисовка Тени
+    // drawing shadows
     ctx.fillStyle = '#909090';
     ctx.beginPath();
     ctx.moveTo(x, y + cellSize / 2);
     ctx.lineTo(x + cellSize / 2, y + cellSize / 2);
     ctx.lineTo(x + cellSize / 2, y);
     ctx.fill();
-    // Отрисовка белого прямоугольника сверху
+    // drawing white rectangle on the top
     ctx.fillStyle = '#eeeeee';
     ctx.fillRect(x + cellSize / 8, y + cellSize / 8, cellSize / 4, cellSize / 4);
-}
+  }
+  // draw static player
+  createPlayer (x, y, cellSize) {
+    // drawing main background
+    ctx.fillStyle = 'green';
+    ctx.fillRect(x, y, cellSize / 2, cellSize / 2);
+  }
 }
 
 // class Player
@@ -315,22 +320,37 @@ class Player {
   constructor(coordX, coordY, game) {
     this.game = game;
     this.name = 'tank1';
-    this.posX = coordX;
-    this.posY = coordY;
+    this.x = coordX;
+    this.y = coordY;
     this.createPlayer(coordX, coordY, 44);
   }
   createPlayer (posX, posY, size) {
     const sizeRect = size;
-    this.size = size;
+    // this.size = size;
+    // ctx.beginPath();
+    // ctx.restore();
+    // ctx.fillRect(posX, posY, sizeRect, sizeRect);
+    // ctx.fillStyle = "red";
+    // ctx.fill();
+
+    for (var j = 0; j < 26; j++) {
+    for (var i = 0; i < 26; i++) {
+      switch (this.game.map[j][i]) {
+        case 3:
+          // static player
+          this.fillCell(i * size / 2 + size, j * size / 2 + size, size);
+          break;
+      }
+    } //  second loop
+  } // first loop
+  }
+  fillCell ( posX, posY, size ) {
+
     ctx.beginPath();
     ctx.restore();
-    ctx.fillRect(posX, posY, sizeRect, sizeRect);
+    ctx.fillRect(posX, posY, size/2, size/2);
     ctx.fillStyle = "red";
     ctx.fill();
-    this.currenCoords = {
-      0: posX,
-      1: posY
-    };
   }
 
 }
