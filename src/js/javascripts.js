@@ -80,7 +80,7 @@ window.MenuScene = class {
     this.menuTitle = 'Game Menu';
     this.menuItems = [
       'Start',
-      'Intro',
+      'About project',
       'Exit'
     ];
   }
@@ -136,26 +136,83 @@ window.MenuScene = class {
   }
 }
 
+// Exit scene
+window.ExitScene = class {
+  update(dt) {
+    // nothing to do here
+  }
+  render(dt, ctx, canvas) {
+    // clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // display "game over" text
+    const gameOverText = 'Game Over';
+    ctx.textBaseline = 'top';
+    ctx.font = '100px Helvetica';
+    ctx.fillStyle = '#ee4024';
+    ctx.fillText(gameOverText, (canvas.width - ctx.measureText(gameOverText).width) / 2, canvas.height / 2 - 50);
+  }
+}
+
+// Intro scene
+window.IntroScene = class {
+  constructor(game) {
+    this.logoRevealTime = 2;
+    this.textTypingTime = 2;
+    this.sceneDisplayTime = 6;
+
+    this.elapsedTime = 0;
+    this.bigText = 'game of the year';
+    this.infoText = 'but 1990...=)';
+    this.game = game;
+  }
+  update(dt) {
+    this.elapsedTime += dt;
+
+    // switch to next scene (by timer or if user want to skip it)
+    if (this.elapsedTime >= this.sceneDisplayTime || this.game.checkKeyPress(13)) {
+      this.game.setScene(MenuScene);
+    }
+  }
+  render(dt, ctx, canvas) {
+    // fill background
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // draw big logo text
+    ctx.globalAlpha = Math.min(1, this.elapsedTime / this.logoRevealTime);
+    ctx.font = '80px Helvetica';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(this.bigText, (canvas.width - ctx.measureText(this.bigText).width) / 2, canvas.height / 2);
+
+    // draw typing text
+    if (this.elapsedTime >= this.logoRevealTime) {
+      let textProgress = Math.min(1, (this.elapsedTime - this.logoRevealTime) / this.textTypingTime);
+      ctx.font = '20px Helvetica';
+      ctx.fillStyle = '#bbb';
+      ctx.fillText(this.infoText.substr(0, Math.floor(this.infoText.length * textProgress)), (canvas.width - ctx.measureText(this.infoText).width) / 2, canvas.height / 2 + 80);
+    }
+  }
+}
+
 // Main game scene
 window.GameScene = class {
   constructor(game) {
     this.game = game;
     this.gameMap();
-    this.posX = game.canvas.width / 2 - 88; // Don't use pixels in game logic! This is only for example
-    this.posY = game.canvas.height - 50;
-    this.coords = {
-      0: this.posX,
-      1: this.posY
-    }
+    this.posX = this.cellSize + 4.5 * this.cellSize; // Don't use pixels in game logic! This is only for example
+    this.posY = this.cellSize + 12 * this.cellSize;
   }
   update(dt) {
-    if (this.game.keys['87']) this.posY-=2; // W
-    if (this.game.keys['83']) this.posY+=2; // S
-    if (this.game.keys['65']) this.posX-=2; // A
-    if (this.game.keys['68']) this.posX+=2; // D
+    let n = 1;
+    if (this.game.keys['87']) { this.getCoord( this.posX, this.posY-=n, 87, n ); } // W
+    else if (this.game.keys['83']) {this.getCoord( this.posX, this.posY+=n, 83, n ); } // S
+    else if (this.game.keys['65']) {this.getCoord( this.posX-=n, this.posY, 65, n ); } // A
+    else if (this.game.keys['68']) {this.getCoord( this.posX+=n, this.posY, 68, n ); } // D
     if (this.game.keys['27']) this.game.setScene(MenuScene); // Back to menu
   }
-  render(dt, game) {
+
+  render(dt, game, kode, n) {
     this.gameMap();
     // X verification
     if ( this.posX < 44 ) {
@@ -176,51 +233,54 @@ window.GameScene = class {
     this.player = new Player(this.posX, this.posY, this.game)
   }
 
-  // check obstacles
-  checkObstacles ( Scene ) {
-    let obj = {
-      0: this.posX,
-      1: this.posY
-    }
-    let currentX;
-    for (var i = 0; i < Scene.map.length; i++) {
-      var cellMap = Scene.map[i];
-      // #1 wrong method
-      // let keys = Scene.game.keys;
-      // if ( !((playerX + 50) < wallX && playerX > (wallX + 50)) || !( (playerY < (wallY+50)) && ((playerY+50) < wallY) ) ) {
-      //   debugger
-      //   //
-      //   if( Scene.game.keys[65] ) { // A
-      //     Scene.posX = wallX + 50;
-      //   }
-      //   if( Scene.game.keys[68] ) { // D
-      //     Scene.posX = wallX - 50;
-      //   }
-      //
-      //   if( Scene.game.keys[87] ) { // W
-      //     Scene.posY = wallY + 50;
-      //   }
-      //   if( Scene.game.keys[83] ) { // S
-      //     Scene.posY = wallY - 50;
-      //   }
-      // }
+  getCoord( posX, posY, keyCode, n ) {
+    // bottom
+    // -2 for acces in array becouse map rect start from cellSize
+    let rowTop = Math.ceil( (posY)/(this.cellSize/2) ) - 2;
+    let cellTop = Math.ceil( (posX)/(this.cellSize/2) ) - 2;
 
-      // #2 wrong method (((((
-      // if ( JSON.stringify( cellMap ) == JSON.stringify(obj) ) {
-      //   console.log('ups');
-      //   this.posX = cellMap[0] + 50;
-      //   this.posY = cellMap[1] + 50;
-      // }
+    // corect coords becouse map drowing from coords(44,44)
+    posX += this.cellSize/2;
+    posY += this.cellSize/2;
+    // top
+    let rowBottom = Math.ceil( posY/(this.cellSize/2) ) - 2; // row array map []
+    let cellBottom = Math.ceil( posX/(this.cellSize/2) ) - 2; // position in array [i]
 
-      // #3 bad
-      // let keys = Scene.game.keys;
-      // if (keys[65]) {
-      //   if ( obj[0] == (cellMap[0] + 50) ) {
-      //     currentX = cellMap[0];
-      //     this.catchPos( currentX )
-      //   }
-      // }
+    console.log(`top coords(x,y) : ${rowTop},${cellTop}. Bottom coords(x,y) : ${rowBottom},${cellBottom}` );
+    console.log(this.game.map[rowTop][cellTop], this.game.map[rowBottom][cellBottom]);
+
+    // [ c1, c2,
+    //   c3, c4 ]
+    let c1 = this.game.map[rowTop][cellTop];
+    let c2 = this.game.map[rowTop][cellTop + 1];
+    let c3 = this.game.map[rowBottom][cellBottom -1];
+    let c4 = this.game.map[rowBottom][cellBottom];
+    console.log(`${c1}  ${c2}
+${c3}  ${c4}`);
+// debugger
+
+    let envArr = [c1,c2,c3,c4];
+    for (var i = 0; i < envArr.length; i++) {
+      if( envArr[i] != 0 ) {
+        if( keyCode == 87 ) {
+          this.posY+=n;
+          return
+        }
+        if( keyCode == 83 ) {
+          this.posY-=n;
+          return
+        }
+        if( keyCode == 65 ) {
+          this.posX+=n;
+          return
+        }
+        if( keyCode == 68 ) {
+          this.posX-=n;
+          return
+        }
+      }
     }
+
   }
 
   // **************** GAME MAP FUNCTION
@@ -250,11 +310,12 @@ window.GameScene = class {
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
     this.game.map = map;
     let cellSize = 44;
+    this.cellSize = cellSize;
     ctx.fillStyle = '#ccc';
     ctx.fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
     ctx.fillStyle = '#000';
@@ -307,12 +368,6 @@ window.GameScene = class {
     ctx.fillStyle = '#eeeeee';
     ctx.fillRect(x + cellSize / 8, y + cellSize / 8, cellSize / 4, cellSize / 4);
   }
-  // draw static player
-  createPlayer (x, y, cellSize) {
-    // drawing main background
-    ctx.fillStyle = 'green';
-    ctx.fillRect(x, y, cellSize / 2, cellSize / 2);
-  }
 }
 
 // class Player
@@ -324,35 +379,38 @@ class Player {
     this.y = coordY;
     this.createPlayer(coordX, coordY, 44);
   }
+
   createPlayer (posX, posY, size) {
+    console.log(posX, posY);
     const sizeRect = size;
-    // this.size = size;
-    // ctx.beginPath();
-    // ctx.restore();
-    // ctx.fillRect(posX, posY, sizeRect, sizeRect);
-    // ctx.fillStyle = "red";
-    // ctx.fill();
-
-    for (var j = 0; j < 26; j++) {
-    for (var i = 0; i < 26; i++) {
-      switch (this.game.map[j][i]) {
-        case 3:
-          // static player
-          this.fillCell(i * size / 2 + size, j * size / 2 + size, size);
-          break;
-      }
-    } //  second loop
-  } // first loop
-  }
-  fillCell ( posX, posY, size ) {
-
+    this.size = size;
     ctx.beginPath();
     ctx.restore();
-    ctx.fillRect(posX, posY, size/2, size/2);
+    ctx.fillRect(posX, posY, sizeRect, sizeRect);
     ctx.fillStyle = "red";
     ctx.fill();
   }
 
+  // createPlayer (posX, posY, size) {
+  //
+  //   for (var j = 0; j < 26; j++) {
+  //   for (var i = 0; i < 26; i++) {
+  //     switch (this.game.map[j][i]) {
+  //       case 3:
+  //         // static player
+  //         this.addTankModel(i * size / 2 + size, j * size / 2 + size, size/2);
+  //         break;
+  //     }
+  //   } //  second loop
+  // } // first loop
+  // }
+  // addTankModel ( posX, posY, size ) {
+  //   ctx.beginPath();
+  //   ctx.restore();
+  //   ctx.fillRect(posX, posY, size, size);
+  //   ctx.fillStyle = "red";
+  //   ctx.fill();
+  // }
 }
 
-var game = new Game();
+// var game = new Game();
