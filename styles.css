@@ -1,0 +1,15 @@
+body {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  color: #444;
+  background: grey;
+  position: relative; }
+
+canvas {
+  background: #ddd; }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; }
