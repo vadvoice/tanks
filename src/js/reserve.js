@@ -331,3 +331,49 @@ createPlayer (posX, posY, size) {
 
     // launch game
     var game = new Game();
+
+
+
+
+
+    // game move logic
+    getCoord( posX, posY, keyCode, n ) {
+      // top
+      // -2 for acces in array becouse map rect start from cellSize
+      let rowTop = Math.ceil( (posY)/(this.cellSize/2) ) - 2;
+      let cellTop = Math.ceil( (posX)/(this.cellSize/2) ) - 2;
+
+      // rectangle coords
+      // [ c1, c2,
+      //   c3, c4 ]
+      let c1 = this.game.map[rowTop][cellTop];
+      let c2 = this.game.map[rowTop][cellTop + 1];
+      let c3 = this.game.map[rowTop+1][cellTop];
+      let c4 = this.game.map[rowTop+1][cellTop+1];
+      console.log(`${c1}  ${c2}
+  ${c3}  ${c4}`);
+  // debugger
+
+      let envArr = [c1,c2,c3,c4];
+      for (var i = 0; i < envArr.length; i++) {
+        if( envArr[i] != 0 ) {
+          if( keyCode == 87 ) {
+            this.posY+=n;
+            return
+          }
+          if( keyCode == 83 ) {
+            this.posY-=n;
+            return
+          }
+          if( keyCode == 65 ) {
+            this.posX+=n;
+            return
+          }
+          if( keyCode == 68 ) {
+            this.posX-=n;
+            return
+          }
+        }
+      }
+
+    }

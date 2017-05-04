@@ -200,87 +200,320 @@ window.GameScene = class {
   constructor(game) {
     this.game = game;
     this.gameMap();
+    //
     this.posX = this.cellSize + 4.5 * this.cellSize; // Don't use pixels in game logic! This is only for example
     this.posY = this.cellSize + 12 * this.cellSize;
+    this.ballX = 0;
+    this.ballY = 0;
+
+    //
+    this.posX2 = this.cellSize + 7.5 * this.cellSize; // Don't use pixels in game logic! This is only for example
+    this.posY2 = this.cellSize + 12 * this.cellSize;
+    this.ballX2 = 0;
+    this.ballY2 = 0;
   }
   update(dt) {
-    let n = 1;
-    if (this.game.keys['87']) { this.getCoord( this.posX, this.posY-=n, 87, n ); } // W
-    else if (this.game.keys['83']) {this.getCoord( this.posX, this.posY+=n, 83, n ); } // S
-    else if (this.game.keys['65']) {this.getCoord( this.posX-=n, this.posY, 65, n ); } // A
-    else if (this.game.keys['68']) {this.getCoord( this.posX+=n, this.posY, 68, n ); } // D
+    // listener for first player
+    let n = 8;
+    // if (this.game.keys['87']) { this.moveTop( n ); } // W
+    if (this.game.keys['87']) { this.moveTop( n, this.player ); } // W
+    if (this.game.keys['83']) { this.moveBottom( n ); } // S
+    if (this.game.keys['65']) { this.moveLeft( n ); } // A
+    if (this.game.keys['68']) { this.moveRight( n ); } // D
+    if (this.game.keys['32']) { this.initFire() } // fire SPACE
+
+    // listener for second player
+    if (this.game.keys['38']) { this.moveTop2( n ); } // UP
+    if (this.game.keys['40']) { this.moveBottom2( n ); } // DOWN
+    if (this.game.keys['37']) { this.moveLeft2( n ); } // LEFT
+    if (this.game.keys['39']) { this.moveRight2( n ); } // D
+    if (this.game.keys['96']) { this.initFire2() } // fire 0
+    // go to menu scene
     if (this.game.keys['27']) this.game.setScene(MenuScene); // Back to menu
   }
 
   render(dt, game, kode, n) {
+    // draw map
     this.gameMap();
-    // X verification
-    if ( this.posX < 44 ) {
-      this.posX = 44;
-    }
-    if (this.posX > game.canvas.width - 88) {
-      this.posX = game.canvas.width - 88
-    }
-    // Y verification
-    if (this.posY < 44 ) {
-      this.posY = 44
-    }
-    if (this.posY > game.canvas.height - 88) {
-      this.posY = game.canvas.height - 88
-    }
 
     // draw player
-    this.player = new Player(this.posX, this.posY, this.game)
+    this.player =  new Player(this);
+
+    // drew second player
+    this.player2 = new SecondPlayer(this);
+
+    if (this.fire) {
+      let cannonball = new Cannonball(this);
+    }
+
   }
 
-  getCoord( posX, posY, keyCode, n ) {
-    // bottom
-    // -2 for acces in array becouse map rect start from cellSize
-    let rowTop = Math.ceil( (posY)/(this.cellSize/2) ) - 2;
-    let cellTop = Math.ceil( (posX)/(this.cellSize/2) ) - 2;
+  // -------------------------------------------------------------------------
+  // experement with move second player TODO repeat code
+  // UP
+  initFire2 () {
+    this.fire = true
+  }
 
-    // corect coords becouse map drowing from coords(44,44)
-    posX += this.cellSize/2;
-    posY += this.cellSize/2;
-    // top
-    let rowBottom = Math.ceil( posY/(this.cellSize/2) ) - 2; // row array map []
-    let cellBottom = Math.ceil( posX/(this.cellSize/2) ) - 2; // position in array [i]
+  moveTop2( n, player ) {
+  let y = this.posY2 - n;
 
-    console.log(`top coords(x,y) : ${rowTop},${cellTop}. Bottom coords(x,y) : ${rowBottom},${cellBottom}` );
-    console.log(this.game.map[rowTop][cellTop], this.game.map[rowBottom][cellBottom]);
+    //
+    let row = Math.floor( y / (this.cellSize/2) ) - 2;
+    if ( row < 0 ) {
+      this.posY2 = this.cellSize
+      return;
+    }
+    let pos = Math.floor( this.posX2 / (this.cellSize/2) ) - 2;
 
-    // [ c1, c2,
-    //   c3, c4 ]
-    let c1 = this.game.map[rowTop][cellTop];
-    let c2 = this.game.map[rowTop][cellTop + 1];
-    let c3 = this.game.map[rowBottom][cellBottom -1];
-    let c4 = this.game.map[rowBottom][cellBottom];
-    console.log(`${c1}  ${c2}
-${c3}  ${c4}`);
-// debugger
+    // obstacles
+    let place1 = this.game.map[row][pos];
+    let place2 = this.game.map[row][pos+1];
+    let place3 = 0
 
-    let envArr = [c1,c2,c3,c4];
-    for (var i = 0; i < envArr.length; i++) {
-      if( envArr[i] != 0 ) {
-        if( keyCode == 87 ) {
-          this.posY+=n;
-          return
-        }
-        if( keyCode == 83 ) {
-          this.posY-=n;
-          return
-        }
-        if( keyCode == 65 ) {
-          this.posX+=n;
-          return
-        }
-        if( keyCode == 68 ) {
-          this.posX-=n;
-          return
-        }
+    // verification
+    if ( row < 0 ) {
+      if ( place1 == 0 && place2 == 0 ) {
+        place3 = this.game.map[row][pos+2]
+      } else {
+        place3 = 0;
+      }
+    }
+    console.log(place1, place2, place3);
+    if ( place1 == 0 && place2 == 0 && place3 == 0) {
+      this.posY2 = y;
+    } else {
+      this.posY2 = (row+3) * (this.cellSize/2);
+    }
+  }
+
+  // DOWN
+  moveBottom2 ( n ) {
+    let y = this.posY2 + this.cellSize + n;
+    //
+    let row = Math.floor( y / (this.cellSize/2) ) - 2;
+    let pos = Math.floor( this.posX2 / (this.cellSize/2) ) - 2;
+
+    // verification
+    if ( row > 25 ) {
+      this.posY2 = this.game.canvas.height - this.cellSize*2;
+      return
+    }
+
+    // obstacles
+    let place1 = this.game.map[row][pos];
+    let place2 = this.game.map[row][pos+1];
+    let place3 = 0
+
+    if ( place1 == 0 && place2 == 0 ) {
+      if (this.posX2%(this.cellSize == 0)) {
+        place3 = this.game.map[row][pos+2]
+      } else {
+        place3 = 0;
       }
     }
 
+    console.log(place1, place2, place3);
+    if ( place1 == 0 && place2 == 0 && place3 == 0) {
+      this.posY2 = y - this.cellSize;
+    } else {
+      this.posY2 = row * this.cellSize/2;
+    }
+  }
+
+  // LEFT
+  moveLeft2(n) {
+    // new coords
+    let x = this.posX2 - n;
+
+    //
+    let row = Math.floor( this.posY2 / (this.cellSize/2) ) - 2;
+    let pos = Math.floor( x / (this.cellSize/2) ) - 2;
+
+    // obstacles
+    let place1 = this.game.map[row][pos];
+    let place2 = this.game.map[row+1][pos];
+    let place3 = 0;
+
+    // @TODO wrong verification
+    if ( place1 == 0 && place2 == 0 && row < 25 ) {
+      if ( this.posY2%(this.cellSize/2) == 0 ) {
+          place3 = 0
+        } else {
+          place3 = this.game.map[row+2][pos];
+        }
+    }
+
+    console.log(place1, place2, place3);
+    //
+    if ( place1 == 0 && place2 == 0 && place3 == 0 ) {
+      this.posX2 = x;
+    } else {
+      this.posX2 = (pos+3)*(this.cellSize/2)
+    }
+  }
+  // RIGHT
+  moveRight2( n ) {
+    // new coords
+    let x = this.posX2 + n;
+
+    //
+    let row = Math.floor( this.posY2 / (this.cellSize/2 ) ) - 2;
+    let pos = Math.floor( (x + this.cellSize) / (this.cellSize/2) ) - 2;
+
+    // obstacles
+    let place1 = this.game.map[row][pos];
+    let place2 = this.game.map[row+1][pos];
+    let place3 = 0;
+
+
+    if ( place1 == 0 && place2 == 0 && row < 25) {
+      if ( this.posY2%(this.cellSize/2) == 0 ) {
+        place3 = 0
+      } else {
+        place3 = this.game.map[row+2][pos];
+      }
+    }
+    console.log(place1, place2, place3);
+
+    if ( place1 == 0 && place2 == 0 && place3 == 0 ) {
+      this.posX2 = x;
+    } else {
+      this.posX2 = (pos)*(this.cellSize/2)
+    }
+  }
+  // -------------------------------------------------------------------------
+
+  initFire () {
+    this.fire = true
+  }
+
+  // A
+  moveLeft(n) {
+    // new coords
+    let x = this.posX - n;
+
+    //
+    let row = Math.floor( this.posY / (this.cellSize/2) ) - 2;
+    let pos = Math.floor( x / (this.cellSize/2) ) - 2;
+
+    // obstacles
+    let place1 = this.game.map[row][pos];
+    let place2 = this.game.map[row+1][pos];
+    let place3 = 0;
+
+    // @TODO wrong verification
+    if ( place1 == 0 && place2 == 0 && row < 25 ) {
+      if ( this.posY%(this.cellSize/2) == 0 ) {
+          place3 = 0
+        } else {
+          place3 = this.game.map[row+2][pos];
+        }
+    }
+
+    console.log(place1, place2, place3);
+    //
+    if ( place1 == 0 && place2 == 0 && place3 == 0 ) {
+      this.posX = x;
+    } else {
+      this.posX = (pos+3)*(this.cellSize/2)
+    }
+  }
+  // D
+  moveRight( n ) {
+    // new coords
+    let x = this.posX + n;
+
+    //
+    let row = Math.floor( this.posY / (this.cellSize/2 ) ) - 2;
+    let pos = Math.floor( (x + this.cellSize) / (this.cellSize/2) ) - 2;
+
+    // obstacles
+    let place1 = this.game.map[row][pos];
+    let place2 = this.game.map[row+1][pos];
+    let place3 = 0;
+
+
+    if ( place1 == 0 && place2 == 0 && row < 25) {
+      if ( this.posY%(this.cellSize/2) == 0 ) {
+        place3 = 0
+      } else {
+        place3 = this.game.map[row+2][pos];
+      }
+    }
+    console.log(place1, place2, place3);
+
+    if ( place1 == 0 && place2 == 0 && place3 == 0 ) {
+      this.posX = x;
+    } else {
+      this.posX = (pos)*(this.cellSize/2)
+    }
+  }
+  // W
+  moveTop( n, player ) {
+  let y = this.posY - n;
+
+    //
+    let row = Math.floor( y / (this.cellSize/2) ) - 2;
+    if ( row < 0 ) {
+      this.posY = this.cellSize
+      return;
+    }
+    let pos = Math.floor( this.posX / (this.cellSize/2) ) - 2;
+
+    // obstacles
+    let place1 = this.game.map[row][pos];
+    let place2 = this.game.map[row][pos+1];
+    let place3 = 0
+
+    // verification
+    if ( row < 0 ) {
+      if ( place1 == 0 && place2 == 0 ) {
+        place3 = this.game.map[row][pos+2]
+      } else {
+        place3 = 0;
+      }
+    }
+    console.log(place1, place2, place3);
+    if ( place1 == 0 && place2 == 0 && place3 == 0) {
+      this.posY = y;
+    } else {
+      this.posY = (row+3) * (this.cellSize/2);
+    }
+  }
+
+  // S
+  moveBottom ( n ) {
+    let y = this.posY + this.cellSize + n;
+    //
+    let row = Math.floor( y / (this.cellSize/2) ) - 2;
+    let pos = Math.floor( this.posX / (this.cellSize/2) ) - 2;
+
+    // verification
+    if ( row > 25 ) {
+      this.posY = this.game.canvas.height - this.cellSize*2;
+      return
+    }
+
+    // obstacles
+    let place1 = this.game.map[row][pos];
+    let place2 = this.game.map[row][pos+1];
+    let place3 = 0
+
+    if ( place1 == 0 && place2 == 0 ) {
+      if (this.posX%(this.cellSize == 0)) {
+        place3 = this.game.map[row][pos+2]
+      } else {
+        place3 = 0;
+      }
+    }
+
+    console.log(place1, place2, place3);
+    if ( place1 == 0 && place2 == 0 && place3 == 0) {
+      this.posY = y - this.cellSize;
+    } else {
+      this.posY = row * this.cellSize/2;
+    }
   }
 
   // **************** GAME MAP FUNCTION
@@ -372,45 +605,109 @@ ${c3}  ${c4}`);
 
 // class Player
 class Player {
-  constructor(coordX, coordY, game) {
+  constructor( game ) {
     this.game = game;
     this.name = 'tank1';
-    this.x = coordX;
-    this.y = coordY;
-    this.createPlayer(coordX, coordY, 44);
+    this.x = game.posX;
+    this.y = game.posY;
+    this.createPlayer(this.x, this.y, game.cellSize);
   }
 
-  createPlayer (posX, posY, size) {
-    console.log(posX, posY);
-    const sizeRect = size;
+  createPlayer (x, y, size) {
+    console.log(x, y);
+    const SIZE = size;
     this.size = size;
     ctx.beginPath();
     ctx.restore();
-    ctx.fillRect(posX, posY, sizeRect, sizeRect);
+    ctx.fillRect(x, y, SIZE, SIZE);
     ctx.fillStyle = "red";
     ctx.fill();
   }
+}
+// cannonball first player
+class Cannonball {
 
-  // createPlayer (posX, posY, size) {
+  constructor( game ) {
+    this.game = game;
+    this.x = this.game.posX;
+    this.y = this.game.posY;
+    this.createCannonball();
+  }
+
+  // fire
+  createCannonball() {
+    this.ballX = this.game.posX + (this.game.cellSize/2);
+    this.ballY = this.game.posY + (this.game.cellSize/2);
+    //
+    ctx.beginPath();
+    ctx.arc(this.game.ballX, this.game.ballY, 5, 0, Math.PI*2);
+    ctx.restore();
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+    this.game.ballY -=5
+    // console.log('here');
+    if (this.game.ballY - this.game.cellSize < 0) {
+      this.game.ballY = this.game.posY ;
+      this.game.ballX = this.game.posX + (this.game.cellSize/2);
+      this.game.fire = false;
+    }
+  }
+}
+
+// class SecondPlayer
+// class Player
+class SecondPlayer {
+  constructor( game ) {
+    this.game = game;
+    this.name = 'tank2';
+    this.x = game.posX2;
+    this.y = game.posY2;
+    this.createPlayer(this.x, this.y, game.cellSize);
+  }
+
+  createPlayer (x, y, size) {
+    console.log(x, y);
+    const SIZE = size;
+    this.size = size;
+    ctx.beginPath();
+    ctx.restore();
+    ctx.fillRect(x, y, SIZE, SIZE);
+    ctx.fillStyle = "green";
+    ctx.fill();
+  }
+  // @TODO try to add move function in player class
+  // moveTop( step, player ) {
+  //   let gameScene = player.game;
+  //   let y = player.y - step;
+  //   //
+  //   let row = Math.floor( y / (gameScene.cellSize/2) ) - 2;
+  //   if ( row < 0 ) {
+  //     player.y = gameScene.cellSize
+  //     return;
+  //   }
+  //   let pos = Math.floor( player.x / (gameScene.cellSize/2) ) - 2;
   //
-  //   for (var j = 0; j < 26; j++) {
-  //   for (var i = 0; i < 26; i++) {
-  //     switch (this.game.map[j][i]) {
-  //       case 3:
-  //         // static player
-  //         this.addTankModel(i * size / 2 + size, j * size / 2 + size, size/2);
-  //         break;
+  //   // obstacles
+  //   let place1 = gameScene.game.map[row][pos];
+  //   let place2 = gameScene.game.map[row][pos+1];
+  //   let place3 = 0
+  //
+  //   // verification
+  //   if ( row < 0 ) {
+  //     if ( place1 == 0 && place2 == 0 ) {
+  //       place3 = gameScene.game.map[row][pos+2]
+  //     } else {
+  //       place3 = 0;
   //     }
-  //   } //  second loop
-  // } // first loop
-  // }
-  // addTankModel ( posX, posY, size ) {
-  //   ctx.beginPath();
-  //   ctx.restore();
-  //   ctx.fillRect(posX, posY, size, size);
-  //   ctx.fillStyle = "red";
-  //   ctx.fill();
+  //   }
+  //   console.log(place1, place2, place3);
+  //   if ( place1 == 0 && place2 == 0 && place3 == 0) {
+  //     player.y = y;
+  //   } else {
+  //     player.y = (row+3) * (gameScene.cellSize/2);
+  //   }
   // }
 }
 
-// var game = new Game();
+var game = new Game();
