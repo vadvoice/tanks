@@ -3,3 +3,5 @@ node_modules/
 .idea/
 *.lock
 .publish
+src/js/reserve.js
+src/js/game.js
