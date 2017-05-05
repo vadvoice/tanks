@@ -4,6 +4,34 @@ let ctx = canvas.getContext('2d');
 // Main Game Class #########################################################################
 window.Game = class {
   constructor() {
+    this.map = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1],
+        [2, 2, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 2, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
     this.canvas = document.querySelector('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.setScene(MenuScene);
@@ -214,20 +242,20 @@ window.GameScene = class {
   }
   update(dt) {
     // listener for first player
-    let n = 8;
+    let n = 5;
     // if (this.game.keys['87']) { this.moveTop( n ); } // W
     if (this.game.keys['87']) { this.moveTop( n, this.player ); } // W
-    if (this.game.keys['83']) { this.moveBottom( n ); } // S
-    if (this.game.keys['65']) { this.moveLeft( n ); } // A
-    if (this.game.keys['68']) { this.moveRight( n ); } // D
-    if (this.game.keys['32']) { this.initFire() } // fire SPACE
+    if (this.game.keys['83']) { this.moveBottom( n, this.player ); } // S
+    if (this.game.keys['65']) { this.moveLeft( n, this.player ); } // A
+    if (this.game.keys['68']) { this.moveRight( n, this.player ); } // D
+    if (this.game.keys['71']) { this.initFire( this.player ) } // fire SPACE
 
     // listener for second player
-    if (this.game.keys['38']) { this.moveTop2( n ); } // UP
-    if (this.game.keys['40']) { this.moveBottom2( n ); } // DOWN
-    if (this.game.keys['37']) { this.moveLeft2( n ); } // LEFT
-    if (this.game.keys['39']) { this.moveRight2( n ); } // D
-    if (this.game.keys['96']) { this.initFire2() } // fire 0
+    if (this.game.keys['38']) { this.moveTop( n, this.player2 ); } // UP
+    if (this.game.keys['40']) { this.moveBottom( n, this.player2 ); } // DOWN
+    if (this.game.keys['37']) { this.moveLeft( n, this.player2 ); } // LEFT
+    if (this.game.keys['39']) { this.moveRight( n, this.player2 ); } // D
+    if (this.game.keys['76']) { this.initFire( this.player2 ) } // fire 0
     // go to menu scene
     if (this.game.keys['27']) this.game.setScene(MenuScene); // Back to menu
   }
@@ -236,318 +264,194 @@ window.GameScene = class {
     // draw map
     this.gameMap();
 
+    // draw emblem
+    var img=document.getElementById("emblem");
+    ctx.drawImage(img,this.cellSize + 6 * this.cellSize, this.cellSize + 12 * this.cellSize, this.cellSize, this.cellSize );
+
     // draw player
     this.player =  new Player(this);
 
     // drew second player
-    this.player2 = new SecondPlayer(this);
+    this.player2 = new Player2(this);
 
     if (this.fire) {
-      let cannonball = new Cannonball(this);
+      this.cannonball = new Cannonball(this, this.player);
+    }
+    if (this.fire2) {
+      this.cannonball2 = new Cannonball(this, this.player2);
     }
 
   }
 
-  // -------------------------------------------------------------------------
-  // experement with move second player TODO repeat code
-  // UP
-  initFire2 () {
-    this.fire = true
-  }
-
-  moveTop2( n, player ) {
-  let y = this.posY2 - n;
-
+  // move functions _____________________________________________________________________
+  // UP || W
+  moveTop( step, player ) {
+    let gameScene = player.game;
+    if (player.name == "tank1") {
+      var gameX = "posX";
+      var gameY = "posY";
+    } else {
+      var gameX = "posX2";
+      var gameY = "posY2";
+    }
+    let y = gameScene[gameY] - step;
     //
-    let row = Math.floor( y / (this.cellSize/2) ) - 2;
+    let row = Math.floor( y / (gameScene.cellSize/2) ) - 2;
     if ( row < 0 ) {
-      this.posY2 = this.cellSize
+      gameScene[gameY] = gameScene.cellSize;
       return;
     }
-    let pos = Math.floor( this.posX2 / (this.cellSize/2) ) - 2;
+    let pos = Math.floor( gameScene[gameX] / (gameScene.cellSize/2) ) - 2;
 
     // obstacles
-    let place1 = this.game.map[row][pos];
-    let place2 = this.game.map[row][pos+1];
+    let place1 = gameScene.game.map[row][pos];
+    let place2 = gameScene.game.map[row][pos+1];
     let place3 = 0
 
     // verification
-    if ( row < 0 ) {
-      if ( place1 == 0 && place2 == 0 ) {
-        place3 = this.game.map[row][pos+2]
-      } else {
-        place3 = 0;
-      }
-    }
-    console.log(place1, place2, place3);
-    if ( place1 == 0 && place2 == 0 && place3 == 0) {
-      this.posY2 = y;
+    if ( place1 == 0 && place2 == 0 && gameScene[gameX]%(gameScene.cellSize/2) == 0 ) {
+      place3 = 0;
     } else {
-      this.posY2 = (row+3) * (this.cellSize/2);
+      place3 = gameScene.game.map[row][pos+2]
+    }
+    if ( place1 == 0 && place2 == 0 && place3 == 0) {
+      gameScene[gameY] = y;
+    } else {
+      gameScene[gameY] = (row+3) * (gameScene.cellSize/2);
     }
   }
 
-  // DOWN
-  moveBottom2 ( n ) {
-    let y = this.posY2 + this.cellSize + n;
+  // DOWN || S
+  moveBottom ( n, player ) {
+    let gameScene = player.game;
+    if (player.name == "tank1") {
+      var gameX = "posX";
+      var gameY = "posY";
+    } else {
+      var gameX = "posX2";
+      var gameY = "posY2";
+    }
+
+    let y = gameScene[gameY] + gameScene.cellSize + n;
     //
-    let row = Math.floor( y / (this.cellSize/2) ) - 2;
-    let pos = Math.floor( this.posX2 / (this.cellSize/2) ) - 2;
+    let row = Math.floor( y / (gameScene.cellSize/2) ) - 2;
+    let pos = Math.floor( gameScene[gameX] / (gameScene.cellSize/2) ) - 2;
 
     // verification
     if ( row > 25 ) {
-      this.posY2 = this.game.canvas.height - this.cellSize*2;
+      gameScene[gameY] = gameScene.game.canvas.height - gameScene.cellSize*2;
       return
     }
 
     // obstacles
-    let place1 = this.game.map[row][pos];
-    let place2 = this.game.map[row][pos+1];
+    let place1 = gameScene.game.map[row][pos];
+    let place2 = gameScene.game.map[row][pos+1];
     let place3 = 0
 
-    if ( place1 == 0 && place2 == 0 ) {
-      if (this.posX2%(this.cellSize == 0)) {
-        place3 = this.game.map[row][pos+2]
-      } else {
-        place3 = 0;
-      }
+    if ( place1 == 0 && place2 == 0 && gameScene[gameX]%(gameScene.cellSize/2) == 0) {
+      place3 = 0;
+    } else {
+      place3 = this.game.map[row][pos+2]
     }
 
-    console.log(place1, place2, place3);
     if ( place1 == 0 && place2 == 0 && place3 == 0) {
-      this.posY2 = y - this.cellSize;
+      gameScene[gameY] = y - gameScene.cellSize;
     } else {
-      this.posY2 = row * this.cellSize/2;
+      gameScene[gameY] = row * gameScene.cellSize/2;
     }
   }
 
-  // LEFT
-  moveLeft2(n) {
+  // LEFT || A
+  moveLeft ( n, player ) {
+    let gameScene = player.game;
+    if (player.name == "tank1") {
+      var gameX = "posX";
+      var gameY = "posY";
+    } else {
+      var gameX = "posX2";
+      var gameY = "posY2";
+    }
     // new coords
-    let x = this.posX2 - n;
+    let x = gameScene[gameX] - n;
 
     //
-    let row = Math.floor( this.posY2 / (this.cellSize/2) ) - 2;
-    let pos = Math.floor( x / (this.cellSize/2) ) - 2;
+    let row = Math.floor( gameScene[gameY] / (gameScene.cellSize/2) ) - 2;
+    let pos = Math.floor( x / (gameScene.cellSize/2) ) - 2;
 
     // obstacles
-    let place1 = this.game.map[row][pos];
-    let place2 = this.game.map[row+1][pos];
+    let place1 = gameScene.game.map[row][pos];
+    let place2 = gameScene.game.map[row+1][pos];
     let place3 = 0;
 
     // @TODO wrong verification
     if ( place1 == 0 && place2 == 0 && row < 25 ) {
-      if ( this.posY2%(this.cellSize/2) == 0 ) {
+      if ( gameScene[gameY]%(gameScene.cellSize/2) == 0 ) {
           place3 = 0
         } else {
-          place3 = this.game.map[row+2][pos];
+          place3 = gameScene.game.map[row+2][pos];
         }
     }
 
-    console.log(place1, place2, place3);
     //
     if ( place1 == 0 && place2 == 0 && place3 == 0 ) {
-      this.posX2 = x;
+      gameScene[gameX] = x;
     } else {
-      this.posX2 = (pos+3)*(this.cellSize/2)
+      gameScene[gameX] = (pos+3)*(gameScene.cellSize/2)
     }
   }
-  // RIGHT
-  moveRight2( n ) {
+  // RIGHT || D
+  moveRight ( n, player ) {
+    let gameScene = player.game;
+    if (player.name == "tank1") {
+      var gameX = "posX";
+      var gameY = "posY";
+    } else {
+      var gameX = "posX2";
+      var gameY = "posY2";
+    }
     // new coords
-    let x = this.posX2 + n;
+    let x = gameScene[gameX] + n;
 
     //
-    let row = Math.floor( this.posY2 / (this.cellSize/2 ) ) - 2;
-    let pos = Math.floor( (x + this.cellSize) / (this.cellSize/2) ) - 2;
+    let row = Math.floor( gameScene[gameY] / (gameScene.cellSize/2 ) ) - 2;
+    let pos = Math.floor( (x + gameScene.cellSize) / (gameScene.cellSize/2) ) - 2;
 
     // obstacles
-    let place1 = this.game.map[row][pos];
-    let place2 = this.game.map[row+1][pos];
+    let place1 = gameScene.game.map[row][pos];
+    let place2 = gameScene.game.map[row+1][pos];
     let place3 = 0;
 
 
     if ( place1 == 0 && place2 == 0 && row < 25) {
-      if ( this.posY2%(this.cellSize/2) == 0 ) {
+      if ( gameScene[gameY]%(gameScene.cellSize/2) == 0 ) {
         place3 = 0
       } else {
-        place3 = this.game.map[row+2][pos];
+        place3 = gameScene.game.map[row+2][pos];
       }
     }
-    console.log(place1, place2, place3);
 
     if ( place1 == 0 && place2 == 0 && place3 == 0 ) {
-      this.posX2 = x;
+      gameScene[gameX] = x;
     } else {
-      this.posX2 = (pos)*(this.cellSize/2)
+      gameScene[gameX] = (pos)*(gameScene.cellSize/2)
     }
   }
-  // -------------------------------------------------------------------------
+  // end move functions _____________________________________________________________________
 
-  initFire () {
-    this.fire = true
-  }
-
-  // A
-  moveLeft(n) {
-    // new coords
-    let x = this.posX - n;
-
-    //
-    let row = Math.floor( this.posY / (this.cellSize/2) ) - 2;
-    let pos = Math.floor( x / (this.cellSize/2) ) - 2;
-
-    // obstacles
-    let place1 = this.game.map[row][pos];
-    let place2 = this.game.map[row+1][pos];
-    let place3 = 0;
-
-    // @TODO wrong verification
-    if ( place1 == 0 && place2 == 0 && row < 25 ) {
-      if ( this.posY%(this.cellSize/2) == 0 ) {
-          place3 = 0
-        } else {
-          place3 = this.game.map[row+2][pos];
-        }
+  // fire
+  initFire ( player ) {
+    let gameScene = player.game;
+    if (player.name == "tank1") {
+      gameScene.fire = true;
     }
-
-    console.log(place1, place2, place3);
-    //
-    if ( place1 == 0 && place2 == 0 && place3 == 0 ) {
-      this.posX = x;
-    } else {
-      this.posX = (pos+3)*(this.cellSize/2)
+    if (player.name == "tank2") {
+      gameScene.fire2 = true;
     }
   }
-  // D
-  moveRight( n ) {
-    // new coords
-    let x = this.posX + n;
-
-    //
-    let row = Math.floor( this.posY / (this.cellSize/2 ) ) - 2;
-    let pos = Math.floor( (x + this.cellSize) / (this.cellSize/2) ) - 2;
-
-    // obstacles
-    let place1 = this.game.map[row][pos];
-    let place2 = this.game.map[row+1][pos];
-    let place3 = 0;
-
-
-    if ( place1 == 0 && place2 == 0 && row < 25) {
-      if ( this.posY%(this.cellSize/2) == 0 ) {
-        place3 = 0
-      } else {
-        place3 = this.game.map[row+2][pos];
-      }
-    }
-    console.log(place1, place2, place3);
-
-    if ( place1 == 0 && place2 == 0 && place3 == 0 ) {
-      this.posX = x;
-    } else {
-      this.posX = (pos)*(this.cellSize/2)
-    }
-  }
-  // W
-  moveTop( n, player ) {
-  let y = this.posY - n;
-
-    //
-    let row = Math.floor( y / (this.cellSize/2) ) - 2;
-    if ( row < 0 ) {
-      this.posY = this.cellSize
-      return;
-    }
-    let pos = Math.floor( this.posX / (this.cellSize/2) ) - 2;
-
-    // obstacles
-    let place1 = this.game.map[row][pos];
-    let place2 = this.game.map[row][pos+1];
-    let place3 = 0
-
-    // verification
-    if ( row < 0 ) {
-      if ( place1 == 0 && place2 == 0 ) {
-        place3 = this.game.map[row][pos+2]
-      } else {
-        place3 = 0;
-      }
-    }
-    console.log(place1, place2, place3);
-    if ( place1 == 0 && place2 == 0 && place3 == 0) {
-      this.posY = y;
-    } else {
-      this.posY = (row+3) * (this.cellSize/2);
-    }
-  }
-
-  // S
-  moveBottom ( n ) {
-    let y = this.posY + this.cellSize + n;
-    //
-    let row = Math.floor( y / (this.cellSize/2) ) - 2;
-    let pos = Math.floor( this.posX / (this.cellSize/2) ) - 2;
-
-    // verification
-    if ( row > 25 ) {
-      this.posY = this.game.canvas.height - this.cellSize*2;
-      return
-    }
-
-    // obstacles
-    let place1 = this.game.map[row][pos];
-    let place2 = this.game.map[row][pos+1];
-    let place3 = 0
-
-    if ( place1 == 0 && place2 == 0 ) {
-      if (this.posX%(this.cellSize == 0)) {
-        place3 = this.game.map[row][pos+2]
-      } else {
-        place3 = 0;
-      }
-    }
-
-    console.log(place1, place2, place3);
-    if ( place1 == 0 && place2 == 0 && place3 == 0) {
-      this.posY = y - this.cellSize;
-    } else {
-      this.posY = row * this.cellSize/2;
-    }
-  }
-
   // **************** GAME MAP FUNCTION
   gameMap() {
-    let map = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1],
-        [2, 2, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 2, 2],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ];
-    this.game.map = map;
-    let cellSize = 44;
+    this.map = this.game.map;
+    let cellSize = 40;
     this.cellSize = cellSize;
     ctx.fillStyle = '#ccc';
     ctx.fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
@@ -556,7 +460,7 @@ window.GameScene = class {
 
     for (var j = 0; j < 26; j++)
     for (var i = 0; i < 26; i++) {
-      switch (map[j][i]) {
+      switch (this.map[j][i]) {
           case 1:
               this.drawBrick(i * cellSize / 2 + cellSize, j * cellSize / 2 + cellSize, cellSize);
               break;
@@ -606,15 +510,12 @@ window.GameScene = class {
 // class Player
 class Player {
   constructor( game ) {
-    this.game = game;
     this.name = 'tank1';
-    this.x = game.posX;
-    this.y = game.posY;
-    this.createPlayer(this.x, this.y, game.cellSize);
+    this.game = game;
+    this.createPlayer(game.posX, game.posY, game.cellSize);
   }
 
   createPlayer (x, y, size) {
-    console.log(x, y);
     const SIZE = size;
     this.size = size;
     ctx.beginPath();
@@ -624,50 +525,15 @@ class Player {
     ctx.fill();
   }
 }
-// cannonball first player
-class Cannonball {
 
+// class Player2
+class Player2 {
   constructor( game ) {
-    this.game = game;
-    this.x = this.game.posX;
-    this.y = this.game.posY;
-    this.createCannonball();
-  }
-
-  // fire
-  createCannonball() {
-    this.ballX = this.game.posX + (this.game.cellSize/2);
-    this.ballY = this.game.posY + (this.game.cellSize/2);
-    //
-    ctx.beginPath();
-    ctx.arc(this.game.ballX, this.game.ballY, 5, 0, Math.PI*2);
-    ctx.restore();
-    ctx.fillStyle = "#0095DD";
-    ctx.fill();
-    ctx.closePath();
-    this.game.ballY -=5
-    // console.log('here');
-    if (this.game.ballY - this.game.cellSize < 0) {
-      this.game.ballY = this.game.posY ;
-      this.game.ballX = this.game.posX + (this.game.cellSize/2);
-      this.game.fire = false;
-    }
-  }
-}
-
-// class SecondPlayer
-// class Player
-class SecondPlayer {
-  constructor( game ) {
-    this.game = game;
     this.name = 'tank2';
-    this.x = game.posX2;
-    this.y = game.posY2;
-    this.createPlayer(this.x, this.y, game.cellSize);
+    this.game = game;
+    this.createPlayer(  game.posX2, game.posY2, game.cellSize );
   }
-
   createPlayer (x, y, size) {
-    console.log(x, y);
     const SIZE = size;
     this.size = size;
     ctx.beginPath();
@@ -676,38 +542,66 @@ class SecondPlayer {
     ctx.fillStyle = "green";
     ctx.fill();
   }
-  // @TODO try to add move function in player class
-  // moveTop( step, player ) {
-  //   let gameScene = player.game;
-  //   let y = player.y - step;
-  //   //
-  //   let row = Math.floor( y / (gameScene.cellSize/2) ) - 2;
-  //   if ( row < 0 ) {
-  //     player.y = gameScene.cellSize
-  //     return;
-  //   }
-  //   let pos = Math.floor( player.x / (gameScene.cellSize/2) ) - 2;
-  //
-  //   // obstacles
-  //   let place1 = gameScene.game.map[row][pos];
-  //   let place2 = gameScene.game.map[row][pos+1];
-  //   let place3 = 0
-  //
-  //   // verification
-  //   if ( row < 0 ) {
-  //     if ( place1 == 0 && place2 == 0 ) {
-  //       place3 = gameScene.game.map[row][pos+2]
-  //     } else {
-  //       place3 = 0;
-  //     }
-  //   }
-  //   console.log(place1, place2, place3);
-  //   if ( place1 == 0 && place2 == 0 && place3 == 0) {
-  //     player.y = y;
-  //   } else {
-  //     player.y = (row+3) * (gameScene.cellSize/2);
-  //   }
-  // }
+}
+
+// class Cannonball
+class Cannonball {
+  constructor( game, player ) {
+    this.game = game;
+    this.createCannonball( player );
+  }
+  // fire
+  createCannonball( player ) {
+    var x, y, cx, cy, fire;
+    // debugger
+    if ( player.name == 'tank1' ) {
+      x = 'posX';
+      y = 'posY';
+      cx = 'ballX';
+      cy = 'ballY';
+      fire = 'fire'
+    }
+    if ( player.name == 'tank2' ) {
+      x = 'posX2';
+      y = 'posY2';
+      cx = 'ballX2';
+      cy = 'ballY2';
+      fire = 'fire2'
+    }
+    if ( this.game[cy] == 0) {
+      this.game[cy] = this.game[y];
+      this.game[cx] = this.game[x] + (this.game.cellSize/2);
+    }
+    // draw
+    let sizeBall = 3;
+    ctx.beginPath();
+    ctx.arc(this.game[cx], this.game[cy], sizeBall, 0, Math.PI*2);
+    ctx.restore();
+    // ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+    // speed ball
+    this.game[cy] -= 5;
+
+    if ( this.game[cy] < (this.game.cellSize + sizeBall) ) {
+      this.game[cy] = 0;
+      this.game[fire] = false;
+    } else {
+      // serach row
+      let row = Math.floor( (this.game[cy] - this.game.cellSize) / (this.game.cellSize/2)  );
+      let pos = Math.floor( (this.game[cx] - this.game.cellSize) / (this.game.cellSize/2) );
+      if ( this.game.game.map[row][pos] == 2 ) {
+        this.game[cy] = 0;
+        this.game[fire] = false;
+      }
+      if ( this.game.game.map[row][pos] == 1 ) {
+        this.game.map[row][pos] = 0;
+        this.game[cy] = 0;
+        this.game[fire] = false;
+      }
+    }
+
+  }
 }
 
 var game = new Game();
