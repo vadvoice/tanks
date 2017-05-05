@@ -25,7 +25,7 @@ window.Game = class {
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
         [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
@@ -41,8 +41,8 @@ window.Game = class {
   initInput() {
     // save keys state
     this.keys = {};
-    document.addEventListener('keydown', e => { this.keys[e.which] = true; });
-    document.addEventListener('keyup', e => { this.keys[e.which] = false; });
+    document.addEventListener('keydown', e => { this.keys[e.which] = true; this.lastKeyDown = e.which });
+    document.addEventListener('keyup', e => { this.keys[e.which] = false; this.lastKeyUp = e.which });
   }
   checkKeyPress(keyCode) {
     // handle key press + release
@@ -243,7 +243,6 @@ window.GameScene = class {
   update(dt) {
     // listener for first player
     let n = 5;
-    // if (this.game.keys['87']) { this.moveTop( n ); } // W
     if (this.game.keys['87']) { this.moveTop( n, this.player ); } // W
     if (this.game.keys['83']) { this.moveBottom( n, this.player ); } // S
     if (this.game.keys['65']) { this.moveLeft( n, this.player ); } // A
@@ -327,6 +326,7 @@ window.GameScene = class {
     if (player.name == "tank1") {
       var gameX = "posX";
       var gameY = "posY";
+      player.game.imgBottom = true;
     } else {
       var gameX = "posX2";
       var gameY = "posY2";
@@ -367,6 +367,7 @@ window.GameScene = class {
     if (player.name == "tank1") {
       var gameX = "posX";
       var gameY = "posY";
+      player.game.imgLeft = true;
     } else {
       var gameX = "posX2";
       var gameY = "posY2";
@@ -405,6 +406,7 @@ window.GameScene = class {
     if (player.name == "tank1") {
       var gameX = "posX";
       var gameY = "posY";
+      player.game.imgRight = true;
     } else {
       var gameX = "posX2";
       var gameY = "posY2";
@@ -517,12 +519,24 @@ class Player {
 
   createPlayer (x, y, size) {
     const SIZE = size;
-    this.size = size;
-    ctx.beginPath();
-    ctx.restore();
-    ctx.fillRect(x, y, SIZE, SIZE);
-    ctx.fillStyle = "red";
-    ctx.fill();
+    // this.size = size;
+    // ctx.beginPath();
+    // ctx.restore();
+    // ctx.fillRect(x, y, SIZE, SIZE);
+    // ctx.fillStyle = "red";
+    // ctx.fill();
+    var img = new Image();
+    if ( this.game.imgLeft && this.game.game.lastKeyDown == 65 ) {
+      img.src = './images/tank_model_left.jpg';
+    } else if ( this.game.imgRight && this.game.game.lastKeyDown == 68 ) {
+      img.src = './images/right.jpg';
+    }else if ( this.game.imgBottom && this.game.game.lastKeyDown == 83 ) {
+      img.src = './images/bottom.jpg';
+    } else {
+      img.src = './images/tank_model.jpg';
+    }
+    //
+    ctx.drawImage(img, x, y, size, size );
   }
 }
 
@@ -541,19 +555,25 @@ class Player2 {
     ctx.fillRect(x, y, SIZE, SIZE);
     ctx.fillStyle = "green";
     ctx.fill();
+
+    // image
+    // ctx.beginPath();
+    // ctx.restore();
+    // var img=document.getElementById("tank2");
+    // ctx.drawImage(img, x, y, size, size );
   }
 }
 
 // class Cannonball
 class Cannonball {
-  constructor( game, player ) {
-    this.game = game;
+  constructor( Scene, player ) {
+    this.game = Scene.game;
+    this.gameScene = Scene;
     this.createCannonball( player );
   }
   // fire
   createCannonball( player ) {
     var x, y, cx, cy, fire;
-    // debugger
     if ( player.name == 'tank1' ) {
       x = 'posX';
       y = 'posY';
@@ -568,37 +588,66 @@ class Cannonball {
       cy = 'ballY2';
       fire = 'fire2'
     }
-    if ( this.game[cy] == 0) {
-      this.game[cy] = this.game[y];
-      this.game[cx] = this.game[x] + (this.game.cellSize/2);
-    }
-    // draw
+    // size
     let sizeBall = 3;
-    ctx.beginPath();
-    ctx.arc(this.game[cx], this.game[cy], sizeBall, 0, Math.PI*2);
-    ctx.restore();
-    // ctx.fillStyle = "#0095DD";
-    ctx.fill();
-    ctx.closePath();
-    // speed ball
-    this.game[cy] -= 5;
+    // speed
+    let speed = 5;
+    // case
 
-    if ( this.game[cy] < (this.game.cellSize + sizeBall) ) {
-      this.game[cy] = 0;
-      this.game[fire] = false;
-    } else {
-      // serach row
-      let row = Math.floor( (this.game[cy] - this.game.cellSize) / (this.game.cellSize/2)  );
-      let pos = Math.floor( (this.game[cx] - this.game.cellSize) / (this.game.cellSize/2) );
-      if ( this.game.game.map[row][pos] == 2 ) {
-        this.game[cy] = 0;
-        this.game[fire] = false;
+    if ( this.game.lastKeyUp == 68 ) { // fire right side
+// debugger
+      if ( this.gameScene[cy] == 0 ) {
+        this.gameScene[cy] = this.gameScene[y] + (this.gameScene.cellSize/2);
+        this.gameScene[cx] = this.gameScene[x] + this.gameScene.cellSize;
       }
-      if ( this.game.game.map[row][pos] == 1 ) {
-        this.game.map[row][pos] = 0;
-        this.game[cy] = 0;
-        this.game[fire] = false;
+      // draw
+      ctx.beginPath();
+      ctx.arc(this.gameScene[cx], this.gameScene[cy], sizeBall, 0, Math.PI*2);
+      ctx.restore();
+      // ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+      // speed ball
+      this.gameScene[cx] += speed;
+      if ( this.gameScene[cx] > this.game.canvas.width - this.gameScene.cellSize ) {
+        this.gameScene[cx] = 0;
+        this.gameScene[fire] = false;
       }
+    } else { // defoult fire to top
+
+      if ( this.gameScene[cy] == 0 ) {
+        this.gameScene[cy] = this.gameScene[y];
+        this.gameScene[cx] = this.gameScene[x] + (this.gameScene.cellSize/2);
+      }
+
+      // draw
+      ctx.beginPath();
+      ctx.arc(this.gameScene[cx], this.gameScene[cy], sizeBall, 0, Math.PI*2);
+      ctx.restore();
+      // ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+      // speed ball
+      this.gameScene[cy] -= speed;
+
+      if ( this.gameScene[cy] < (this.gameScene.cellSize + sizeBall) ) {
+        this.gameScene[cy] = 0;
+        this.gameScene[fire] = false;
+      } else {
+        // serach row
+        let row = Math.floor( (this.gameScene[cy] - this.gameScene.cellSize) / (this.gameScene.cellSize/2)  );
+        let pos = Math.floor( (this.gameScene[cx] - this.gameScene.cellSize) / (this.gameScene.cellSize/2) );
+        if ( this.game.map[row][pos] == 2 ) {
+          this.gameScene[cy] = 0;
+          this.gameScene[fire] = false;
+        }
+        if ( this.game.map[row][pos] == 1 ) {
+          this.game.map[row][pos] = 0;
+          this.gameScene[cy] = 0;
+          this.gameScene[fire] = false;
+        }
+      }
+
     }
 
   }
