@@ -142,7 +142,7 @@ window.MenuScene = class {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // draw menu title
-    ctx.font = '60px Helvetica';
+    ctx.font = '40px Helvetica';
     ctx.textBaseline = 'top';
     ctx.fillStyle = '#80DEEA';
     ctx.fillText(this.menuTitle, (canvas.width - ctx.measureText(this.menuTitle).width) / 2, 20);
@@ -229,16 +229,20 @@ window.GameScene = class {
     this.game = game;
     this.gameMap();
     //
-    this.posX = this.cellSize + 4.5 * this.cellSize; // Don't use pixels in game logic! This is only for example
-    this.posY = this.cellSize + 12 * this.cellSize;
+    this.posX = this.cellSize + 0 * this.cellSize; // Don't use pixels in game logic! This is only for example
+    this.posY = this.cellSize + 0 * this.cellSize;
     this.ballX = 0;
     this.ballY = 0;
+    this.speed = 0;
+    this.killed = 0;
 
     //
     this.posX2 = this.cellSize + 7.5 * this.cellSize; // Don't use pixels in game logic! This is only for example
     this.posY2 = this.cellSize + 12 * this.cellSize;
     this.ballX2 = 0;
     this.ballY2 = 0;
+    this.speed2 = 0;
+    this.killed2 = 0;
   }
   update(dt) {
     // listener for first player
@@ -273,12 +277,14 @@ window.GameScene = class {
     // drew second player
     this.player2 = new Player2(this);
 
-    if (this.fire) {
-      this.cannonball = new Cannonball(this, this.player);
-    }
-    if (this.fire2) {
-      this.cannonball2 = new Cannonball(this, this.player2);
-    }
+    ctx.font = "20px Arial";
+    ctx.fillStyle = 'orange';
+    ctx.fillText("player points: " + this.killed  , 40, 25);
+
+
+    ctx.font = "20px Arial";
+    ctx.fillStyle = 'green';
+    ctx.fillText("player points: " + this.killed2 , 420, 585);
   }
 
   // move functions _____________________________________________________________________
@@ -288,11 +294,13 @@ window.GameScene = class {
     if (player.name == "tank1") {
       var gameX = "posX";
       var gameY = "posY";
-      player.fire = 'top';
-      player.game.directionFire = 'fireToTop'
+      player.game.directionMove = 'top';
+      player.game.directionFire = 'fireToTop';
     } else {
       var gameX = "posX2";
       var gameY = "posY2";
+      player.game.directionMove2 = 'top';
+      player.game.directionFire2 = 'fireToTop';
     }
     let y = gameScene[gameY] - step;
     //
@@ -327,11 +335,13 @@ window.GameScene = class {
     if (player.name == "tank1") {
       var gameX = "posX";
       var gameY = "posY";
-      player.game.imgBottom = true;
+      player.game.directionMove = 'down';
       player.game.directionFire = 'fireToDown';
     } else {
       var gameX = "posX2";
       var gameY = "posY2";
+      player.game.directionMove2 = 'down';
+      player.game.directionFire2 = 'fireToDown';
     }
     let y = gameScene[gameY] + gameScene.cellSize + n;
     //
@@ -368,11 +378,13 @@ window.GameScene = class {
     if (player.name == "tank1") {
       var gameX = "posX";
       var gameY = "posY";
-      player.game.imgLeft = true;
+      player.game.directionMove = 'left';
       player.game.directionFire = 'fireToLeft';
     } else {
       var gameX = "posX2";
       var gameY = "posY2";
+      player.game.directionMove2 = 'left';
+      player.game.directionFire2 = 'fireToLeft';
     }
     // new coords
     let x = gameScene[gameX] - n;
@@ -408,11 +420,14 @@ window.GameScene = class {
     if (player.name == "tank1") {
       var gameX = "posX";
       var gameY = "posY";
-      player.game.imgRight = true;
+      player.game.directionMove = 'right';
       player.game.directionFire = 'fireToRight';
     } else {
       var gameX = "posX2";
       var gameY = "posY2";
+      player.game.imgRight2 = true;
+      player.game.directionMove2 = 'right';
+      player.game.directionFire2 = 'fireToRight';
     }
     // new coords
     let x = gameScene[gameX] + n;
@@ -458,6 +473,8 @@ window.GameScene = class {
     this.map = this.game.map;
     let cellSize = 40;
     this.cellSize = cellSize;
+    this.game.canvas.width = this.game.map.length * 20 + (cellSize*2);
+    this.game.canvas.height = this.game.map.length * 20 + (cellSize*2);
     ctx.fillStyle = '#ccc';
     ctx.fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
     ctx.fillStyle = '#000';
@@ -519,6 +536,7 @@ class Player {
     this.mainGame = game.game;
     this.game = game;
     this.createPlayer(game.posX, game.posY, game.cellSize);
+    this.cannonball = new Bullet( this )
   }
 
   createPlayer (x, y, size) {
@@ -531,13 +549,13 @@ class Player {
     // ctx.fill();
     var img = new Image();
     img.src = './images/tank_model.jpg';
-    if ( this.game.imgLeft && this.mainGame.lastKeyDown == 65 ) {
+    if ( this.game.directionMove == 'left' ) {
       img.src = './images/tank_model_left.jpg';
-    } else if ( this.game.imgRight && this.mainGame.lastKeyDown == 68 ) {
+    } else if ( this.game.directionMove == 'right' ) {
       img.src = './images/right.jpg';
-    }else if ( this.game.imgBottom && this.mainGame.lastKeyDown == 83 ) {
+    }else if ( this.game.directionMove == 'down' ) {
       img.src = './images/bottom.jpg';
-    } else if ( this.game.imgBottom && this.mainGame.lastKeyDown == 87 ) {
+    } else if ( this.game.directionMove == 'top' ) {
       img.src = './images/tank_model.jpg';
     }
     //
@@ -551,243 +569,160 @@ class Player2 {
     this.name = 'tank2';
     this.game = game;
     this.createPlayer(  game.posX2, game.posY2, game.cellSize );
+    this.cannonball = new Bullet( this )
   }
   createPlayer (x, y, size) {
     const SIZE = size;
-    this.size = size;
-    ctx.beginPath();
-    ctx.restore();
-    ctx.fillRect(x, y, SIZE, SIZE);
-    ctx.fillStyle = "green";
-    ctx.fill();
-
-    // image
+    // this.size = size;
     // ctx.beginPath();
     // ctx.restore();
-    // var img=document.getElementById("tank2");
-    // ctx.drawImage(img, x, y, size, size );
+    // ctx.fillRect(x, y, SIZE, SIZE);
+    // ctx.fillStyle = "green";
+    // ctx.fill();
+
+    // image
+    var img = new Image();
+    img.src = './images/tank2_t.jpg';
+
+    if ( this.game.directionMove2 == 'left' ) {
+      img.src = './images/tank2_l.jpg';
+    } else if ( this.game.directionMove2 == "right" ) {
+      img.src = './images/tank2_r.jpg';
+    } else if ( this.game.directionMove2 == "down" ) {
+      img.src = './images/tank2_b.jpg';
+    } else if ( this.game.directionMove2 == 'top' ) {
+      img.src = './images/tank2_t.jpg';
+    }
+    //
+    ctx.drawImage(img, x, y, size, size );
   }
 }
 
-// class Cannonball
-class Cannonball {
-  constructor( Scene, player ) {
-    this.game = Scene.game;
-    this.gameScene = Scene;
-    this.createCannonball( player );
+class Bullet {
+  constructor( player ) {
+    this.player = player;
+    this.game = player.game;
+    this.renderBullet( this.player )
   }
-  // fire
-  createCannonball( player ) {
+  renderBullet(player) {
+    let gameScene = player.game;
     let options = {}
-    var x, y, cx, cy, fire;
     if ( player.name == 'tank1' ) {
       options.x = 'posX';
       options.y = 'posY';
-      // cx = 'ballX';
-      // cy = 'ballY';
       options.ballX = 'ballX';
       options.ballY = 'ballY';
-      options.fire = 'fire'
+      options.fire = 'fire';
+      options.directionFire = 'directionFire';
+      options.speed = 'speed'
+      options.axis = 'axis'
     }
     if ( player.name == 'tank2' ) {
       options.x = 'posX2';
       options.y = 'posY2';
-      // cx = 'ballX2';
-      // cy = 'ballY2';
       options.ballX = 'ballX2';
       options.ballY = 'ballY2';
-      options.fire = 'fire2'
+      options.fire = 'fire2';
+      options.directionFire = 'directionFire2';
+      options.speed = 'speed2';
+      options.axis = 'axis2'
     }
-
+    if ( !player.game[options.fire] ) {return}
+    var x, y, fire, value;
     // size
     options.sizeBall = 3;
-    // speed
-    options.speed = 5;
-    // fire to bottom
-    var fireToDown = ( gameScene, player, options ) => {
-      if ( !gameScene[options.fire] ) {return}
-      x = gameScene[options.x] + gameScene.cellSize/2;
-      y = gameScene[options.y] + gameScene.cellSize;
-      //
-      if ( gameScene[options.ballY] == 0 ) {
-        gameScene[options.ballX] = x;
-        gameScene[options.ballY] = y;
-      }
-      // draw
-      ctx.beginPath();
-      ctx.arc(gameScene[options.ballX], gameScene[options.ballY], options.sizeBall, 0, Math.PI*2);
-      ctx.fill();
-      ctx.closePath();
-      // speed ball
-      gameScene[options.ballY] += options.speed;
+    //
+    if ( gameScene[options.ballY] == 0 && gameScene[options.ballX] == 0 ) {
 
-      if ( gameScene[options.ballY] > (gameScene.game.canvas.height - gameScene.cellSize) ) {
-        gameScene[options.ballY] = 0;
-        gameScene[options.fire] = false;
-        return
-      } else {
-        // serach row
-        let row = Math.floor( (gameScene[options.ballY] - gameScene.cellSize) / (gameScene.cellSize/2) ) - 1;
-        let pos = Math.floor( (gameScene[options.ballX] - gameScene.cellSize) / (gameScene.cellSize/2) );
-        if ( gameScene.game.map[row][pos] == 2 ) {
-          gameScene[options.ballX] = 0;
-          gameScene[options.ballY] = 0;
-          gameScene[options.fire] = false;
-        }
-        if ( gameScene.game.map[row][pos] == 1 ) {
-          gameScene.game.map[row][pos] = 0;
-          gameScene[options.ballX] = 0;
-          gameScene[options.ballY] = 0;
-          gameScene[options.fire] = false;
-        }
+      if ( gameScene[options.directionFire] == "fireToDown" ) {
+        gameScene[options.axis] = "y";
+        // fire to bottom
+        gameScene[options.ballX] = gameScene[options.x] + gameScene.cellSize/2;
+        gameScene[options.ballY] = gameScene[options.y] + gameScene.cellSize;
+        //
+        gameScene[options.speed] = 5;
+      }
+      if ( gameScene[options.directionFire] == "fireToTop" ) {
+        gameScene[options.axis] = "y";
+        // fire to bottom
+        gameScene[options.ballX] = gameScene[options.x] + gameScene.cellSize/2;
+        gameScene[options.ballY] = gameScene[options.y];
+        //
+        gameScene[options.speed] = -5;
+      }
+      if ( gameScene[options.directionFire] == "fireToLeft" ) {
+        gameScene[options.axis] = "x";
+        // fire to bottom
+        gameScene[options.ballX] = gameScene[options.x];
+        gameScene[options.ballY] = gameScene[options.y] + gameScene.cellSize/2;
+        //
+        gameScene[options.speed] = -5;
+      }
+      if ( gameScene[options.directionFire] == "fireToRight" ) {
+      gameScene[options.axis] = "x";
+        // fire to bottom
+        gameScene[options.ballX] = gameScene[options.x] + gameScene.cellSize;
+        gameScene[options.ballY] = gameScene[options.y] + gameScene.cellSize/2;
+        //
+        gameScene[options.speed] = 5;
       }
     }
-    // fire to top
-    var fireToTop = ( gameScene, player, options ) => {
-      if ( !gameScene[options.fire] ) {return}
-      x = gameScene[options.x] + gameScene.cellSize/2;
-      y = gameScene[options.y];
-      //
-      if ( gameScene[options.ballY] == 0 ) {
-        gameScene[options.ballX] = x;
-        gameScene[options.ballY] = y;
-      }
-      // draw
-      ctx.beginPath();
-      ctx.arc(gameScene[options.ballX], gameScene[options.ballY], options.sizeBall, 0, Math.PI*2);
-      ctx.fill();
-      ctx.closePath();
-      // speed ball
-      gameScene[options.ballY] -= options.speed;
-      //
-      if ( gameScene[options.ballY] < (gameScene.cellSize) ) {
+    if ( gameScene[options.axis] == "y") {
+      gameScene[options.ballY] += gameScene[options.speed];
+    }
+    if ( gameScene[options.axis] == "x") {
+      gameScene[options.ballX] += gameScene[options.speed];
+    }
+
+    // draw
+    ctx.beginPath();
+    ctx.arc(gameScene[options.ballX], gameScene[options.ballY], options.sizeBall, 0, Math.PI*2);
+    ctx.fill();
+    ctx.closePath();
+
+    // player 1 killed
+    if (  ( ( gameScene[options.ballX] > gameScene.posX2 ) && (gameScene[options.ballX] < (gameScene.posX2 + gameScene.cellSize)) ) && ( gameScene[options.ballY] > gameScene.posY2 && gameScene[options.ballY] < (gameScene.posY2 + gameScene.cellSize) ) ) {
+      gameScene.posX2 = gameScene.cellSize + 7.5 * gameScene.cellSize;
+      gameScene.posY2 = gameScene.cellSize + 12 * gameScene.cellSize;
+      gameScene[options.ballX] = 0;
+      gameScene[options.ballY] = 0;
+      gameScene[options.fire] = false;
+      gameScene.killed++
+    }
+
+    // player 2 killed
+    if (  ( ( gameScene[options.ballX] > gameScene.posX ) && (gameScene[options.ballX] < (gameScene.posX + gameScene.cellSize)) ) && ( gameScene[options.ballY] > gameScene.posY && gameScene[options.ballY] < (gameScene.posY + gameScene.cellSize) ) ) {
+      gameScene.posX = gameScene.cellSize + 0 * gameScene.cellSize;
+      gameScene.posY = gameScene.cellSize + 0 * gameScene.cellSize;
+      gameScene[options.ballX] = 0;
+      gameScene[options.ballY] = 0;
+      gameScene[options.fire] = false;
+      gameScene.killed2++
+    }
+
+    // obstacles
+    if ( gameScene[options.ballY] > (gameScene.game.canvas.height - gameScene.cellSize) || gameScene[options.ballY] < gameScene.cellSize ||  gameScene[options.ballX] < gameScene.cellSize || gameScene[options.ballX] > (gameScene.game.canvas.width + gameScene.cellSize) ) {
+      gameScene[options.ballX] = 0;
+      gameScene[options.ballY] = 0;
+      gameScene[options.fire] = false;
+    } else {
+      // serach row
+      let row = Math.floor( (gameScene[options.ballY] - gameScene.cellSize) / (gameScene.cellSize/2) ) || 0;
+      if (row > 25) {row = 25}
+      let pos = Math.floor( (gameScene[options.ballX] - gameScene.cellSize) / (gameScene.cellSize/2) );
+      if ( gameScene.game.map[row][pos] == 2 ) {
         gameScene[options.ballX] = 0;
         gameScene[options.ballY] = 0;
         gameScene[options.fire] = false;
-        return
-      } else {
-        // serach row
-        let row = Math.floor( (gameScene[options.ballY] - gameScene.cellSize) / (gameScene.cellSize/2) );
-        let pos = Math.floor( (gameScene[options.ballX] - gameScene.cellSize) / (gameScene.cellSize/2) );
-        if ( gameScene.game.map[row][pos] == 2 ) {
-          gameScene[options.ballX] = 0;
-          gameScene[options.ballY] = 0;
-          gameScene[options.fire] = false;
-          return
-        }
-        if ( gameScene.game.map[row][pos] == 1 ) {
-          gameScene.game.map[row][pos] = 0;
-          gameScene[options.ballY] = 0;
-          gameScene[options.ballX] = 0;
-          gameScene[options.fire] = false;
-          return
-        }
       }
-    }
-    // fire to left
-    var fireToLeft = ( gameScene, player, options ) => {
-      if ( !gameScene[options.fire] ) {return}
-      x = gameScene[options.x];
-      y = gameScene[options.y] + gameScene.cellSize/2;
-      //
-      if ( gameScene[options.ballX] == 0 ) {
-        gameScene[options.ballX] = x;
-        gameScene[options.ballY] = y;
-      }
-      // draw
-      ctx.beginPath();
-      ctx.arc(gameScene[options.ballX], gameScene[options.ballY], options.sizeBall, 0, Math.PI*2);
-      ctx.fill();
-      ctx.closePath();
-      // speed ball
-      gameScene[options.ballX] -= options.speed;
-      //
-      if ( gameScene[options.ballX] < (gameScene.cellSize) ) {
+      if ( gameScene.game.map[row][pos] == 1 ) {
+        gameScene.game.map[row][pos] = 0;
         gameScene[options.ballX] = 0;
         gameScene[options.ballY] = 0;
         gameScene[options.fire] = false;
-        return
-      } else {
-        // serach row
-        let row = Math.floor( (gameScene[options.ballY] - gameScene.cellSize) / (gameScene.cellSize/2) );
-        let pos = Math.floor( (gameScene[options.ballX] - gameScene.cellSize) / (gameScene.cellSize/2) );
-        if ( gameScene.game.map[row][pos] == 2 ) {
-          gameScene[options.ballX] = 0;
-          gameScene[options.ballY] = 0;
-          gameScene[options.fire] = false;
-          return
-        }
-        if ( gameScene.game.map[row][pos] == 1 ) {
-          gameScene.game.map[row][pos] = 0;
-          gameScene[options.ballX] = 0;
-          gameScene[options.ballY] = 0;
-          gameScene[options.fire] = false;
-          return
-        }
       }
     }
-    // fire to right
-    var fireToRight = ( gameScene, player, options ) => {
-      if ( !gameScene[options.fire] ) {return}
-      x = gameScene[options.x] + gameScene.cellSize;
-      y = gameScene[options.y] + gameScene.cellSize/2;
-      //
-      if ( gameScene[options.ballX] == 0 ) {
-        gameScene[options.ballX] = x;
-        gameScene[options.ballY] = y;
-      }
-      // draw
-      ctx.beginPath();
-      ctx.arc(gameScene[options.ballX], gameScene[options.ballY], options.sizeBall, 0, Math.PI*2);
-      ctx.fill();
-      ctx.closePath();
-      // speed ball
-      gameScene[options.ballX] += options.speed;
-      //
-      if ( gameScene[options.ballX] > (gameScene.game.canvas.width - gameScene.cellSize) ) {
-        gameScene[options.ballX] = 0;
-        gameScene[options.ballY] = 0;
-        gameScene[options.fire] = false;
-        return
-      } else {
-        // serach row
-        let row = Math.floor( (gameScene[options.ballY] - gameScene.cellSize) / (gameScene.cellSize/2) );
-        let pos = Math.floor( (gameScene[options.ballX] - gameScene.cellSize) / (gameScene.cellSize/2) );
-        if ( gameScene.game.map[row][pos] == 2 ) {
-          gameScene[options.ballX] = 0;
-          gameScene[options.ballY] = 0;
-          gameScene[options.fire] = false;
-          return
-        }
-        if ( gameScene.game.map[row][pos] == 1 ) {
-          gameScene.game.map[row][pos] = 0;
-          gameScene[options.ballX] = 0;
-          gameScene[options.ballY] = 0;
-          gameScene[options.fire] = false;
-          return
-        }
-      }
-    }
-    // cases
-    switch ( player.game.directionFire ) {
-      case 'fireToDown':
-        fireToDown( this.gameScene, player, options )
-        break;
-      case 'fireToTop':
-        fireToTop( this.gameScene, player, options )
-        break;
-      case 'fireToLeft':
-        fireToLeft( this.gameScene, player, options )
-        break;
-      case 'fireToRight':
-        fireToRight( this.gameScene, player, options )
-        break;
-      default:
-        return
-    }
-
-  } // create cannonball
-
+  } // create
 }
 
 var game = new Game();
