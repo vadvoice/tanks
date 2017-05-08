@@ -4,34 +4,41 @@ html(lang="en")
     title titlePage
     link(rel="stylesheet" href="./styles.css")
   body
-    .container
+    header
       h1 Game
+    .container
+      .scoreboard
+        .points1
+        .points2
       canvas(width="600" height="600" moz-opaque)
         p sorry
-        img(src="./images/emblem.jpg" id='emblem')
-      .article
-        h2 Control
+      .content
+        h2 Control system
         .player-control
           .info
-            p Control keys
           .keys-wrap
-            .key(data-info="top") w
-            .key(data-info="bottom") s
-            .key(data-info="left") a
-            .key(data-info="right") d
-            .key(data-info="fire") g
-            .key(data-info="") h
+            .control--wrap
+              .key(data-info="top") W
+              .key(data-info="left") A
+              .key(data-info="bottom") S
+              .key(data-info="right") D
+            .attak--wrap
+              p attak keys
+              .key(data-info="fire") G
+              .key(data-info="") H
 
         .player-control
           .info
-            p Control keys
           .keys-wrap
-            .key(data-info="top") &#8593;
-            .key(data-info="bottom") &#8595;
-            .key(data-info="left") &#8592;
-            .key(data-info="right") &#8594;
-            .key(data-info="fire") k
-            .key(data-info="") l
+            .control--wrap
+              .key(data-info="top") &#8593;
+              .key(data-info="left") &#8592;
+              .key(data-info="bottom") &#8595;
+              .key(data-info="right") &#8594;
+            .attak--wrap
+              p attak keys
+              .key(data-info="fire") K
+              .key(data-info="") J
 
 
 

@@ -1,12 +1,13 @@
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
+var points1 = 0, points2 = 0;
 // levels
-var simpleMap = [
+var defaultMap = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
     [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
     [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
     [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
@@ -88,7 +89,7 @@ var battle = [
 // Main Game Class #########################################################################
 window.Game = class {
   constructor() {
-    this.map = simpleMap;
+    this.map = defaultMap;
 
     this.canvas = document.querySelector('canvas');
     this.ctx = this.canvas.getContext('2d');
@@ -167,7 +168,8 @@ window.MenuScene = class {
     this.menuItems = [
       'Start',
       'About project',
-      'Exit'
+      'Exit',
+      'Select level'
     ];
   }
   update(dt) {
@@ -177,10 +179,10 @@ window.MenuScene = class {
     this.menuActiveOpacity += dt * this.opacityDirection;
 
     // menu navigation
-    if (this.game.checkKeyPress(83)) { // DOWN arrow
+    if (this.game.checkKeyPress(40)) { // DOWN arrow
       this.menuIndex++;
       this.menuIndex %= this.menuItems.length;
-    } else if (this.game.checkKeyPress(87)) { // UP arrow
+    } else if (this.game.checkKeyPress(38)) { // UP arrow
       this.menuIndex--;
       if (this.menuIndex < 0) this.menuIndex = this.menuItems.length -1;
     }
@@ -191,6 +193,7 @@ window.MenuScene = class {
         case 0: this.game.setScene(GameScene); break;
         case 1: this.game.setScene(IntroScene); break;
         case 2: this.game.setScene(ExitScene); break;
+        case 3: this.game.setScene(SelectLevel); break;
       }
     }
   }
@@ -223,24 +226,82 @@ window.MenuScene = class {
 }
 
 // Exit scene
+window.SelectLevel = class {
+  constructor (game) {
+    this.game = game;
+    this.opacity = 1;
+    this.activeOpacity = 0;
+    this.title = "Select level"
+    this.levelIndex = 0;
+    this.levels = [
+      'default',
+      'buttle',
+      'globalIt'
+    ];
+  }
+  update(dt) {
+
+    // calculate active scene item opacity
+    let opacityValue = this.activeOpacity + dt * this.opacity;
+    if (opacityValue > 1 || opacityValue < 0) this.opacity *= -1;
+    this.activeOpacity += dt * this.opacity;
+
+    // navigation
+    if (this.game.checkKeyPress(40)) { // DOWN arrow
+      this.levelIndex++;
+      this.levelIndex %= this.levels.length;
+    } else if (this.game.checkKeyPress(38)) { // UP arrow
+      this.levelIndex--;
+      if (this.levelIndex < 0) this.levelIndex = this.levelIndex.length -1;
+    }
+
+    // item selected
+    if (this.game.checkKeyPress(13)) {
+      switch (this.levelIndex) {
+        case 0: this.game.map = defaultMap; this.game.setScene(MenuScene); break;
+        case 1: this.game.map = buttle; this.game.setScene(MenuScene);; break;
+        case 2: this.game.map = globalIT; this.game.setScene(MenuScene);; break;
+      }
+    }
+    if (this.game.keys[27]) {
+      this.game.setScene(MenuScene);
+    }
+  }
+  render(dt, ctx, canvas) {
+
+    // fill background
+    ctx.fillStyle = '#5C97BF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // draw title
+    ctx.font = '40px Helvetica';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = '#222';
+    ctx.fillText(this.title, (canvas.width - ctx.measureText(this.title).width) / 2, 20);
+
+    // draw items
+    const itemHeight = 50, fontSize = 30;
+    ctx.font = fontSize + 'px Helvetica';
+    for (const [index, item] of this.levels.entries()) {
+      if (index === this.levelIndex) {
+        ctx.globalAlpha = this.activeOpacity;
+        ctx.fillStyle = '#22313F';
+        ctx.fillRect(0, canvas.height / 2 + index * itemHeight, canvas.width, itemHeight);
+      }
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#E4F1FE';
+      ctx.fillText(item, (canvas.width - ctx.measureText(item).width) / 2, canvas.height / 2 + index * itemHeight + (itemHeight - fontSize) / 2);
+    }
+  }
+}
+
+// Exit scene
 window.ExitScene = class {
   constructor (game) {
     this.game = game;
   }
   update(dt) {
     if ( this.game.keys[32] || this.game.keys[27] ) {
-      this.game.setScene(MenuScene);
-    }
-    if ( this.game.keys[49] ) {
-      this.game.map = simpleMap;
-      this.game.setScene(MenuScene);
-    }
-    if ( this.game.keys[50] ) {
-      this.game.map = globalIT;
-      this.game.setScene(MenuScene);
-    }
-    if ( this.game.keys[51] ) {
-      this.game.map = battle;
       this.game.setScene(MenuScene);
     }
   }
@@ -254,27 +315,6 @@ window.ExitScene = class {
     ctx.font = '100px Helvetica';
     ctx.fillStyle = '#ee4024';
     ctx.fillText(gameOverText, (canvas.width - ctx.measureText(gameOverText).width) / 2, canvas.height / 2 - 50);
-
-    ctx.fillStyle = "#22313F"
-
-    let selectMap = 'push button for select map:';
-    ctx.beginPath();
-    ctx.font = '22px Helvetica';
-    ctx.fillText(selectMap, (canvas.width - ctx.measureText(selectMap).width) / 2, canvas.height / 2 + 70);
-
-    ctx.font = '14px Helvetica';
-
-    let first = "1"
-    ctx.beginPath();
-    ctx.fillText(first, (canvas.width - ctx.measureText(first).width) / 2, canvas.height / 2 + 120);
-
-    let second = "2"
-    ctx.beginPath();
-    ctx.fillText(second, (canvas.width - ctx.measureText(second).width) / 2, canvas.height / 2 + 150);
-
-    let third = "3"
-    ctx.beginPath();
-    ctx.fillText(third, (canvas.width - ctx.measureText(third).width) / 2, canvas.height / 2 + 180);
   }
 }
 
@@ -287,7 +327,7 @@ window.IntroScene = class {
 
     this.elapsedTime = 0;
     this.bigText = 'Game of the year';
-    this.infoText = 'but in 1990...=)';
+    this.infoText = 'Game for two people';
     this.game = game;
   }
   update(dt) {
@@ -347,7 +387,8 @@ window.GameScene = class {
     if (this.game.keys['83']) { this.moveBottom( n, this.player ); } // S
     if (this.game.keys['65']) { this.moveLeft( n, this.player ); } // A
     if (this.game.keys['68']) { this.moveRight( n, this.player ); } // D
-    if (this.game.keys['71']) { this.initFire( this.player ) } // fire SPACE
+    if (this.game.keys['71']) { this.initFire( this.player ) } // fire G
+    if (this.game.keys['72']) { this.fatality( this.player ) } // fire H
 
     // listener for second player
     if (this.game.keys['38']) { this.moveTop( n, this.player2 ); } // UP
@@ -362,10 +403,6 @@ window.GameScene = class {
   render(dt, game, kode, n) {
     // draw map
     this.gameMap();
-
-    // draw emblem
-    // var img=document.getElementById("emblem");
-    // ctx.drawImage(img,this.cellSize + 6 * this.cellSize, this.cellSize + 12 * this.cellSize, this.cellSize, this.cellSize );
 
     // draw player
     this.player =  new Player(this);
@@ -564,6 +601,16 @@ window.GameScene = class {
       gameScene.fire2 = true;
     }
   }
+  // super weapons
+  fatality( player ) {
+    // debugger
+    if (player.name == "tank1") {
+      gameScene.fatality = true;
+    }
+    if (player.name == "tank2") {
+      gameScene.fatality2 = true;
+    }
+  }
   // **************** GAME MAP FUNCTION
   gameMap() {
     this.map = this.game.map;
@@ -571,7 +618,7 @@ window.GameScene = class {
     this.cellSize = cellSize;
     this.game.canvas.width = this.game.map.length * 20 + (cellSize*2);
     this.game.canvas.height = this.game.map.length * 20 + (cellSize*2);
-    ctx.fillStyle = '#ccc';
+    ctx.fillStyle = '#ddd';
     ctx.fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
     ctx.fillStyle = '#000';
     ctx.fillRect(cellSize, cellSize, 13 * cellSize, 13 * cellSize);
@@ -653,12 +700,7 @@ class Player {
 
   createPlayer (x, y, size) {
     const SIZE = size;
-    // this.size = size;
-    // ctx.beginPath();
-    // ctx.restore();
-    // ctx.fillRect(x, y, SIZE, SIZE);
-    // ctx.fillStyle = "red";
-    // ctx.fill();
+
     var img = new Image();
     img.src = './images/tank1_d.png';
     if ( this.game.directionMove == 'left' ) {
@@ -671,7 +713,7 @@ class Player {
       img.src = './images/tank1_t.png';
     }
     //
-    ctx.drawImage(img, x, y, size, size );
+    ctx.drawImage(img, x, y, SIZE, SIZE );
   }
 }
 
@@ -685,13 +727,6 @@ class Player2 {
   }
   createPlayer (x, y, size) {
     const SIZE = size;
-    // this.size = size;
-    // ctx.beginPath();
-    // ctx.restore();
-    // ctx.fillRect(x, y, SIZE, SIZE);
-    // ctx.fillStyle = "green";
-    // ctx.fill();
-
     // image
     var img = new Image();
     img.src = './images/tank2_t.png';
@@ -706,7 +741,7 @@ class Player2 {
       img.src = './images/tank2_t.png';
     }
     //
-    ctx.drawImage(img, x, y, size, size );
+    ctx.drawImage(img, x, y, SIZE, SIZE );
   }
 }
 
@@ -799,7 +834,9 @@ class Bullet {
       gameScene[options.ballX] = 0;
       gameScene[options.ballY] = 0;
       gameScene[options.fire] = false;
-      gameScene.killed++
+      points1 = gameScene.killed++;
+      addPoint(points2);
+
     }
 
     // player 2 killed
@@ -809,7 +846,8 @@ class Bullet {
       gameScene[options.ballX] = 0;
       gameScene[options.ballY] = 0;
       gameScene[options.fire] = false;
-      gameScene.killed2++
+      points2 = gameScene.killed2++
+      addPoint(points2);
     }
 
     if ( gameScene.killed > 5 || gameScene.killed2 > 5 ) {
@@ -841,5 +879,23 @@ class Bullet {
     }
   } // create
 }
+
+class Fatality {
+  constructor () {
+
+  }
+}
+
+function addPoint ( variable ) {
+  var table = document.querySelector('.points1');
+  table.innerText = variable;
+  table.classList.add('hit');
+  setTimeout( function () {
+    table.classList.remove('hit');
+  }, 500)
+}
+
+// audio
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)()
 
 var game = new Game();
