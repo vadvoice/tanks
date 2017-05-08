@@ -1,6 +1,5 @@
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
-
 // levels
 var simpleMap = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
