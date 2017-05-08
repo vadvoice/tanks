@@ -23,12 +23,57 @@ body
   display: flex
   flex-flow: column
   align-items: center
-  color: #444
-  background: grey
+  background: #34495E
   position: relative
 canvas
   background: $color
+  box-shadow: 0 0 10px 2px #000
+  +border-radius(5px)
 .container
   display: flex
   flex-direction: column
   align-items: center
+  max-height: 100vh
+.article
+  color: #95A5A6
+.keys-wrap
+  display: flex
+  flex-flow: row
+  .key
+    padding: 1em
+    margin: 0 .5em
+    +border(1px)
+    +border-radius(5px)
+    position: relative
+    transition: all .2s
+    &::after
+      content: "go to " attr(data-info)
+      display: none
+      position: absolute
+      width: 110px
+      height: 20px
+      padding: .5em
+      color: white
+      top: -40px
+      left: 0
+      background: #111
+      +border-radius(5px)
+      text-align: center
+    &::before
+      position: absolute
+      top: -5px
+      left: 20px
+      content: ''
+      display: none
+      border-left: 5px solid transparent
+      border-right: 5px solid transparent
+      border-top: 5px solid #111
+      border-bottom: 5px solid transparent
+    &:hover
+      background: #2C3E50
+      box-shadow: 0 0 5px 0px white
+      color: #F2F1EF
+      &::after
+        display: block
+      &::before
+        display: block

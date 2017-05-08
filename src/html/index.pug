@@ -6,14 +6,35 @@ html(lang="en")
   body
     .container
       h1 Game
-      canvas(width="600" height="600")
+      canvas(width="600" height="600" moz-opaque)
+        p sorry
         img(src="./images/emblem.jpg" id='emblem')
-        img(src="./images/tank_model.jpg" id='tank')
-        img(src="./images/tank_model_bottom.jpg" id='tankB')
-        img(src="./images/tank_model_right.jpg" id='tankR')
-        img(src="./images/tank_model_left.jpg" id='tankL')
+      .article
+        h2 Control
+        .player-control
+          .info
+            p Control keys
+          .keys-wrap
+            .key(data-info="top") w
+            .key(data-info="bottom") s
+            .key(data-info="left") a
+            .key(data-info="right") d
+            .key(data-info="fire") g
+            .key(data-info="") h
 
-        img(src="./images/tank_model.jpg" id='tank2')
+        .player-control
+          .info
+            p Control keys
+          .keys-wrap
+            .key(data-info="top") &#8593;
+            .key(data-info="bottom") &#8595;
+            .key(data-info="left") &#8592;
+            .key(data-info="right") &#8594;
+            .key(data-info="fire") k
+            .key(data-info="") l
+
+
+
   script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js")
   script(src="javascripts.js")
   //- script(src="js/bundle.js")

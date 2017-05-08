@@ -1,37 +1,96 @@
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
 
+// levels
+var simpleMap = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1],
+    [2, 2, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 2, 2],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+];
+var globalIT = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0],
+    [0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0],
+    [0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1],
+    [2, 2, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 2, 2],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+];
+var battle = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 2, 2, 2, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 2, 2, 2, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 2, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 0, 0, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 0, 1, 1],
+    [2, 2, 0, 0, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 0, 2, 2],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 2, 2, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+];
 // Main Game Class #########################################################################
 window.Game = class {
   constructor() {
-    this.map = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1],
-        [2, 2, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 2, 2],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ];
+    this.map = simpleMap;
+
     this.canvas = document.querySelector('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.setScene(MenuScene);
@@ -166,8 +225,25 @@ window.MenuScene = class {
 
 // Exit scene
 window.ExitScene = class {
+  constructor (game) {
+    this.game = game;
+  }
   update(dt) {
-    // nothing to do here
+    if ( this.game.keys[32] || this.game.keys[27] ) {
+      this.game.setScene(MenuScene);
+    }
+    if ( this.game.keys[49] ) {
+      this.game.map = simpleMap;
+      this.game.setScene(MenuScene);
+    }
+    if ( this.game.keys[50] ) {
+      this.game.map = globalIT;
+      this.game.setScene(MenuScene);
+    }
+    if ( this.game.keys[51] ) {
+      this.game.map = battle;
+      this.game.setScene(MenuScene);
+    }
   }
   render(dt, ctx, canvas) {
     // clear the canvas
@@ -179,6 +255,27 @@ window.ExitScene = class {
     ctx.font = '100px Helvetica';
     ctx.fillStyle = '#ee4024';
     ctx.fillText(gameOverText, (canvas.width - ctx.measureText(gameOverText).width) / 2, canvas.height / 2 - 50);
+
+    ctx.fillStyle = "#22313F"
+
+    let selectMap = 'push button for select map:';
+    ctx.beginPath();
+    ctx.font = '22px Helvetica';
+    ctx.fillText(selectMap, (canvas.width - ctx.measureText(selectMap).width) / 2, canvas.height / 2 + 70);
+
+    ctx.font = '14px Helvetica';
+
+    let first = "1"
+    ctx.beginPath();
+    ctx.fillText(first, (canvas.width - ctx.measureText(first).width) / 2, canvas.height / 2 + 120);
+
+    let second = "2"
+    ctx.beginPath();
+    ctx.fillText(second, (canvas.width - ctx.measureText(second).width) / 2, canvas.height / 2 + 150);
+
+    let third = "3"
+    ctx.beginPath();
+    ctx.fillText(third, (canvas.width - ctx.measureText(third).width) / 2, canvas.height / 2 + 180);
   }
 }
 
@@ -190,7 +287,7 @@ window.IntroScene = class {
     this.sceneDisplayTime = 6;
 
     this.elapsedTime = 0;
-    this.bigText = 'game of the year';
+    this.bigText = 'Game of the year';
     this.infoText = 'but in 1990...=)';
     this.game = game;
   }
@@ -209,7 +306,7 @@ window.IntroScene = class {
 
     // draw big logo text
     ctx.globalAlpha = Math.min(1, this.elapsedTime / this.logoRevealTime);
-    ctx.font = '80px Helvetica';
+    ctx.font = '60px Helvetica';
     ctx.fillStyle = '#fff';
     ctx.fillText(this.bigText, (canvas.width - ctx.measureText(this.bigText).width) / 2, canvas.height / 2);
 
@@ -229,7 +326,7 @@ window.GameScene = class {
     this.game = game;
     this.gameMap();
     //
-    this.posX = this.cellSize + 0 * this.cellSize; // Don't use pixels in game logic! This is only for example
+    this.posX = this.cellSize + 4.5 * this.cellSize; // Don't use pixels in game logic! This is only for example
     this.posY = this.cellSize + 0 * this.cellSize;
     this.ballX = 0;
     this.ballY = 0;
@@ -268,8 +365,8 @@ window.GameScene = class {
     this.gameMap();
 
     // draw emblem
-    var img=document.getElementById("emblem");
-    ctx.drawImage(img,this.cellSize + 6 * this.cellSize, this.cellSize + 12 * this.cellSize, this.cellSize, this.cellSize );
+    // var img=document.getElementById("emblem");
+    // ctx.drawImage(img,this.cellSize + 6 * this.cellSize, this.cellSize + 12 * this.cellSize, this.cellSize, this.cellSize );
 
     // draw player
     this.player =  new Player(this);
@@ -489,6 +586,9 @@ window.GameScene = class {
           case 2:
               this.drawHardBrick(i * cellSize / 2 + cellSize, j * cellSize / 2 + cellSize, cellSize);
               break;
+          case 3:
+              this.drawEmblem(i * cellSize / 2 + cellSize, j * cellSize / 2 + cellSize, cellSize);
+              break;
       }
     }
   }
@@ -511,7 +611,7 @@ window.GameScene = class {
     ctx.fillRect(x + cellSize / 4 - cellSize / 16, y, cellSize / 16, cellSize / 4);
     ctx.fillRect(x, y + cellSize / 4 - cellSize / 16, cellSize / 16, cellSize / 4);
   }
-  // draw concrit cell
+  // draw armour cell
   drawHardBrick(x, y,cellSize) {
     // drawing main background
     ctx.fillStyle = '#cccccc';
@@ -526,6 +626,19 @@ window.GameScene = class {
     // drawing white rectangle on the top
     ctx.fillStyle = '#eeeeee';
     ctx.fillRect(x + cellSize / 8, y + cellSize / 8, cellSize / 4, cellSize / 4);
+  }
+  // draw emblem
+  drawEmblem(x, y,cellSize) {
+    // drawing main background
+    ctx.fillStyle = '#cccccc';
+    ctx.fillRect(x, y, cellSize / 2, cellSize / 2);
+    // drawing shadows
+    ctx.fillStyle = '#6C7A89';
+    ctx.beginPath();
+    ctx.moveTo(x, y + cellSize / 2);
+    ctx.lineTo(x + cellSize / 2, y + cellSize / 2);
+    ctx.lineTo(x + cellSize / 2, y);
+    ctx.fill();
   }
 }
 
@@ -548,15 +661,15 @@ class Player {
     // ctx.fillStyle = "red";
     // ctx.fill();
     var img = new Image();
-    img.src = './images/tank_model.jpg';
+    img.src = './images/tank1_d.png';
     if ( this.game.directionMove == 'left' ) {
-      img.src = './images/tank_model_left.jpg';
+      img.src = './images/tank1_l.png';
     } else if ( this.game.directionMove == 'right' ) {
-      img.src = './images/right.jpg';
+      img.src = './images/tank1_r.png';
     }else if ( this.game.directionMove == 'down' ) {
-      img.src = './images/bottom.jpg';
+      img.src = './images/tank1_d.png';
     } else if ( this.game.directionMove == 'top' ) {
-      img.src = './images/tank_model.jpg';
+      img.src = './images/tank1_t.png';
     }
     //
     ctx.drawImage(img, x, y, size, size );
@@ -582,16 +695,16 @@ class Player2 {
 
     // image
     var img = new Image();
-    img.src = './images/tank2_t.jpg';
+    img.src = './images/tank2_t.png';
 
     if ( this.game.directionMove2 == 'left' ) {
-      img.src = './images/tank2_l.jpg';
+      img.src = './images/tank2_l.png';
     } else if ( this.game.directionMove2 == "right" ) {
-      img.src = './images/tank2_r.jpg';
+      img.src = './images/tank2_r.png';
     } else if ( this.game.directionMove2 == "down" ) {
-      img.src = './images/tank2_b.jpg';
+      img.src = './images/tank2_d.png';
     } else if ( this.game.directionMove2 == 'top' ) {
-      img.src = './images/tank2_t.jpg';
+      img.src = './images/tank2_t.png';
     }
     //
     ctx.drawImage(img, x, y, size, size );
@@ -692,7 +805,7 @@ class Bullet {
 
     // player 2 killed
     if (  ( ( gameScene[options.ballX] > gameScene.posX ) && (gameScene[options.ballX] < (gameScene.posX + gameScene.cellSize)) ) && ( gameScene[options.ballY] > gameScene.posY && gameScene[options.ballY] < (gameScene.posY + gameScene.cellSize) ) ) {
-      gameScene.posX = gameScene.cellSize + 0 * gameScene.cellSize;
+      gameScene.posX = gameScene.cellSize + 4.5 * gameScene.cellSize;
       gameScene.posY = gameScene.cellSize + 0 * gameScene.cellSize;
       gameScene[options.ballX] = 0;
       gameScene[options.ballY] = 0;
@@ -700,8 +813,13 @@ class Bullet {
       gameScene.killed2++
     }
 
+    if ( gameScene.killed > 5 || gameScene.killed2 > 5 ) {
+      alert('win');
+      gameScene.game.setScene(ExitScene);
+    }
+
     // obstacles
-    if ( gameScene[options.ballY] > (gameScene.game.canvas.height - gameScene.cellSize) || gameScene[options.ballY] < gameScene.cellSize ||  gameScene[options.ballX] < gameScene.cellSize || gameScene[options.ballX] > (gameScene.game.canvas.width + gameScene.cellSize) ) {
+    if ( gameScene[options.ballY] > (gameScene.game.canvas.height - gameScene.cellSize) || gameScene[options.ballY] < gameScene.cellSize ||  gameScene[options.ballX] < gameScene.cellSize || gameScene[options.ballX] > (gameScene.game.canvas.width - gameScene.cellSize) ) {
       gameScene[options.ballX] = 0;
       gameScene[options.ballY] = 0;
       gameScene[options.fire] = false;
@@ -715,7 +833,7 @@ class Bullet {
         gameScene[options.ballY] = 0;
         gameScene[options.fire] = false;
       }
-      if ( gameScene.game.map[row][pos] == 1 ) {
+      if ( gameScene.game.map[row][pos] == 1 || gameScene.game.map[row][pos] == 3 ) {
         gameScene.game.map[row][pos] = 0;
         gameScene[options.ballX] = 0;
         gameScene[options.ballY] = 0;
