@@ -1,12 +1,28 @@
+// chose canvas element
 let canvas = document.querySelector('canvas');
+// set context
 let ctx = canvas.getContext('2d');
-// levels
-var simpleMap = [
+
+// global variables for statistic
+// players kills
+var points1 = 0, points2 = 0;
+
+// audio
+var audioBtn = document.querySelector('.soundtrack');
+audioBtn.onclick = function () {
+  let audio = document.getElementById('soundtrack');
+  audio.classList.toggle('play-sound');
+  audio.className == 'play-sound' ? audio.play() : audio.pause();
+}
+
+// levels( maps )
+// 1
+var defaultMap = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
     [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
     [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
     [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
@@ -29,34 +45,36 @@ var simpleMap = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
+// 2
 var globalIT = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0],
-    [0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0],
+    [0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0],
+    [0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1],
+    [1, 1, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 1, 1],
     [2, 2, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 2, 2],
+    [0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
-    [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 2, 2, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 2, 2, 0, 0],
+    [0, 0, 1, 3, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 3, 1, 0, 0],
+    [0, 0, 1, 3, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 3, 1, 0, 0],
+    [0, 0, 1, 3, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 3, 1, 0, 0],
+    [0, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 0, 0],
+    [0, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 0, 0],
+    [0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
+// 3
 var battle = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -85,11 +103,11 @@ var battle = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
+
 // Main Game Class #########################################################################
 window.Game = class {
   constructor() {
-    this.map = simpleMap;
-
+    this.map = defaultMap;
     this.canvas = document.querySelector('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.setScene(MenuScene);
@@ -150,12 +168,12 @@ window.Game = class {
       this.render(dt);
       requestAnimationFrame(frame);
     }
-
+    // run render
     requestAnimationFrame(frame);
   }
 }
 
-// Menu scene
+// Menu scene #########################################################################
 window.MenuScene = class {
   constructor(game) {
     // set default values
@@ -167,7 +185,8 @@ window.MenuScene = class {
     this.menuItems = [
       'Start',
       'About project',
-      'Exit'
+      'Exit',
+      'Select level'
     ];
   }
   update(dt) {
@@ -177,10 +196,10 @@ window.MenuScene = class {
     this.menuActiveOpacity += dt * this.opacityDirection;
 
     // menu navigation
-    if (this.game.checkKeyPress(83)) { // DOWN arrow
+    if (this.game.checkKeyPress(40)) { // DOWN arrow
       this.menuIndex++;
       this.menuIndex %= this.menuItems.length;
-    } else if (this.game.checkKeyPress(87)) { // UP arrow
+    } else if (this.game.checkKeyPress(38)) { // UP arrow
       this.menuIndex--;
       if (this.menuIndex < 0) this.menuIndex = this.menuItems.length -1;
     }
@@ -191,6 +210,7 @@ window.MenuScene = class {
         case 0: this.game.setScene(GameScene); break;
         case 1: this.game.setScene(IntroScene); break;
         case 2: this.game.setScene(ExitScene); break;
+        case 3: this.game.setScene(SelectLevel); break;
       }
     }
   }
@@ -222,25 +242,83 @@ window.MenuScene = class {
   }
 }
 
-// Exit scene
+// Select Level Scene #########################################################################
+window.SelectLevel = class {
+  constructor (game) {
+    this.game = game;
+    this.opacity = 1;
+    this.activeOpacity = 0;
+    this.title = "Select level"
+    this.levelIndex = 0;
+    this.levels = [
+      'default',
+      'buttle',
+      'globalIt'
+    ];
+  }
+  update(dt) {
+
+    // calculate active scene item opacity
+    let opacityValue = this.activeOpacity + dt * this.opacity;
+    if (opacityValue > 1 || opacityValue < 0) this.opacity *= -1;
+    this.activeOpacity += dt * this.opacity;
+
+    // navigation
+    if (this.game.checkKeyPress(40)) { // DOWN arrow
+      this.levelIndex++;
+      this.levelIndex %= this.levels.length;
+    } else if (this.game.checkKeyPress(38)) { // UP arrow
+      this.levelIndex--;
+      if (this.levelIndex < 0) this.levelIndex = this.levelIndex.length -1;
+    }
+
+    // item selected
+    if (this.game.checkKeyPress(13)) {
+      switch (this.levelIndex) {
+        case 0: this.game.map = defaultMap; this.game.setScene(MenuScene); break;
+        case 1: this.game.map = buttle; this.game.setScene(MenuScene);; break;
+        case 2: this.game.map = globalIT; this.game.setScene(MenuScene);; break;
+      }
+    }
+    if (this.game.keys[27]) {
+      this.game.setScene(MenuScene);
+    }
+  }
+  render(dt, ctx, canvas) {
+
+    // fill background
+    ctx.fillStyle = '#5C97BF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // draw title
+    ctx.font = '40px Helvetica';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = '#222';
+    ctx.fillText(this.title, (canvas.width - ctx.measureText(this.title).width) / 2, 20);
+
+    // draw items
+    const itemHeight = 50, fontSize = 30;
+    ctx.font = fontSize + 'px Helvetica';
+    for (const [index, item] of this.levels.entries()) {
+      if (index === this.levelIndex) {
+        ctx.globalAlpha = this.activeOpacity;
+        ctx.fillStyle = '#22313F';
+        ctx.fillRect(0, canvas.height / 2 + index * itemHeight, canvas.width, itemHeight);
+      }
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#E4F1FE';
+      ctx.fillText(item, (canvas.width - ctx.measureText(item).width) / 2, canvas.height / 2 + index * itemHeight + (itemHeight - fontSize) / 2);
+    }
+  }
+}
+
+// Exit Scene #########################################################################
 window.ExitScene = class {
   constructor (game) {
     this.game = game;
   }
   update(dt) {
     if ( this.game.keys[32] || this.game.keys[27] ) {
-      this.game.setScene(MenuScene);
-    }
-    if ( this.game.keys[49] ) {
-      this.game.map = simpleMap;
-      this.game.setScene(MenuScene);
-    }
-    if ( this.game.keys[50] ) {
-      this.game.map = globalIT;
-      this.game.setScene(MenuScene);
-    }
-    if ( this.game.keys[51] ) {
-      this.game.map = battle;
       this.game.setScene(MenuScene);
     }
   }
@@ -254,31 +332,10 @@ window.ExitScene = class {
     ctx.font = '100px Helvetica';
     ctx.fillStyle = '#ee4024';
     ctx.fillText(gameOverText, (canvas.width - ctx.measureText(gameOverText).width) / 2, canvas.height / 2 - 50);
-
-    ctx.fillStyle = "#22313F"
-
-    let selectMap = 'push button for select map:';
-    ctx.beginPath();
-    ctx.font = '22px Helvetica';
-    ctx.fillText(selectMap, (canvas.width - ctx.measureText(selectMap).width) / 2, canvas.height / 2 + 70);
-
-    ctx.font = '14px Helvetica';
-
-    let first = "1"
-    ctx.beginPath();
-    ctx.fillText(first, (canvas.width - ctx.measureText(first).width) / 2, canvas.height / 2 + 120);
-
-    let second = "2"
-    ctx.beginPath();
-    ctx.fillText(second, (canvas.width - ctx.measureText(second).width) / 2, canvas.height / 2 + 150);
-
-    let third = "3"
-    ctx.beginPath();
-    ctx.fillText(third, (canvas.width - ctx.measureText(third).width) / 2, canvas.height / 2 + 180);
   }
 }
 
-// Intro scene
+// Intro Scene #########################################################################
 window.IntroScene = class {
   constructor(game) {
     this.logoRevealTime = 2;
@@ -287,7 +344,7 @@ window.IntroScene = class {
 
     this.elapsedTime = 0;
     this.bigText = 'Game of the year';
-    this.infoText = 'but in 1990...=)';
+    this.infoText = 'Game for two people';
     this.game = game;
   }
   update(dt) {
@@ -319,7 +376,7 @@ window.IntroScene = class {
   }
 }
 
-// Main game scene
+// Main Game Scene #########################################################################
 window.GameScene = class {
   constructor(game) {
     this.game = game;
@@ -347,43 +404,56 @@ window.GameScene = class {
     if (this.game.keys['83']) { this.moveBottom( n, this.player ); } // S
     if (this.game.keys['65']) { this.moveLeft( n, this.player ); } // A
     if (this.game.keys['68']) { this.moveRight( n, this.player ); } // D
-    if (this.game.keys['71']) { this.initFire( this.player ) } // fire SPACE
+    // attak
+    if (this.game.keys['71']) { this.initFire( this.player ) } // fire G
+    if (this.game.keys['72']) { this.fatality( this.player ) } // fire H
 
     // listener for second player
     if (this.game.keys['38']) { this.moveTop( n, this.player2 ); } // UP
     if (this.game.keys['40']) { this.moveBottom( n, this.player2 ); } // DOWN
     if (this.game.keys['37']) { this.moveLeft( n, this.player2 ); } // LEFT
     if (this.game.keys['39']) { this.moveRight( n, this.player2 ); } // D
+    //
     if (this.game.keys['76']) { this.initFire( this.player2 ) } // fire 0
     // go to menu scene
     if (this.game.keys['27']) this.game.setScene(MenuScene); // Back to menu
   }
 
   render(dt, game, kode, n) {
-    // draw map
+    // draw game map
     this.gameMap();
-
-    // draw emblem
-    // var img=document.getElementById("emblem");
-    // ctx.drawImage(img,this.cellSize + 6 * this.cellSize, this.cellSize + 12 * this.cellSize, this.cellSize, this.cellSize );
 
     // draw player
     this.player =  new Player(this);
 
-    // drew second player
+    // draw player2
     this.player2 = new Player2(this);
 
+    // statistic on canvas
+    // for first player
     ctx.font = "20px Arial";
     ctx.fillStyle = 'orange';
     ctx.fillText("player points: " + this.killed  , 40, 25);
-
-
+    // for second player
     ctx.font = "20px Arial";
     ctx.fillStyle = 'green';
     ctx.fillText("player points: " + this.killed2 , 420, 585);
   }
 
-  // move functions _____________________________________________________________________
+  // move functions ***********************************************
+
+  /* method verify
+  *   part of array map
+  *
+  *   [0,    0,    1,     0     ]
+  *   [0, verify, verify, verify]
+  *   [0, tank,   tank,   0     ]
+  *   [0, tank,   tank,   0     ]
+  *   [0,    0,    0,     0     ]
+  *
+  * if tank move to position where
+  * arr[ row ][ pos ] != 0 not let it
+  */
   // UP || W
   moveTop( step, player ) {
     let gameScene = player.game;
@@ -398,16 +468,19 @@ window.GameScene = class {
       player.game.directionMove2 = 'top';
       player.game.directionFire2 = 'fireToTop';
     }
+    // get new coord Y
     let y = gameScene[gameY] - step;
-    //
+    // check row in map array
     let row = Math.floor( y / (gameScene.cellSize/2) ) - 2;
     if ( row < 0 ) {
       gameScene[gameY] = gameScene.cellSize;
       return;
     }
+    // search position in array row
     let pos = Math.floor( gameScene[gameX] / (gameScene.cellSize/2) ) - 2;
 
     // obstacles
+    // 3 positions above tank
     let place1 = gameScene.game.map[row][pos];
     let place2 = gameScene.game.map[row][pos+1];
     let place3 = 0
@@ -418,9 +491,12 @@ window.GameScene = class {
     } else {
       place3 = gameScene.game.map[row][pos+2]
     }
+    // if oll positions == 0, allow movement
     if ( place1 == 0 && place2 == 0 && place3 == 0) {
       gameScene[gameY] = y;
-    } else {
+    }
+    // give coord obstacle
+    else {
       gameScene[gameY] = (row+3) * (gameScene.cellSize/2);
     }
   }
@@ -428,6 +504,7 @@ window.GameScene = class {
   // DOWN || S
   moveBottom ( n, player ) {
     let gameScene = player.game;
+    // chose tank
     if (player.name == "tank1") {
       var gameX = "posX";
       var gameY = "posY";
@@ -439,9 +516,11 @@ window.GameScene = class {
       player.game.directionMove2 = 'down';
       player.game.directionFire2 = 'fireToDown';
     }
+    // get new coord Y + tank width
     let y = gameScene[gameY] + gameScene.cellSize + n;
-    //
+    // row arr
     let row = Math.floor( y / (gameScene.cellSize/2) ) - 2;
+    // position arr
     let pos = Math.floor( gameScene[gameX] / (gameScene.cellSize/2) ) - 2;
 
     // verification
@@ -450,7 +529,7 @@ window.GameScene = class {
       return
     }
 
-    // obstacles
+    // obstacles below tank
     let place1 = gameScene.game.map[row][pos];
     let place2 = gameScene.game.map[row][pos+1];
     let place3 = 0
@@ -460,17 +539,21 @@ window.GameScene = class {
     } else {
       place3 = this.game.map[row][pos+2]
     }
-
+    // allow move
     if ( place1 == 0 && place2 == 0 && place3 == 0) {
       gameScene[gameY] = y - gameScene.cellSize;
-    } else {
+    }
+    // give coord obstacle
+    else {
       gameScene[gameY] = row * gameScene.cellSize/2;
     }
   }
 
   // LEFT || A
   moveLeft ( n, player ) {
+    // game scene
     let gameScene = player.game;
+    // chose tank
     if (player.name == "tank1") {
       var gameX = "posX";
       var gameY = "posY";
@@ -482,14 +565,15 @@ window.GameScene = class {
       player.game.directionMove2 = 'left';
       player.game.directionFire2 = 'fireToLeft';
     }
-    // new coords
+    // get new coord X
     let x = gameScene[gameX] - n;
 
-    //
+    // row arr
     let row = Math.floor( gameScene[gameY] / (gameScene.cellSize/2) ) - 2;
+    // position in chosen row
     let pos = Math.floor( x / (gameScene.cellSize/2) ) - 2;
 
-    // obstacles
+    // obstacles on left hand side
     let place1 = gameScene.game.map[row][pos];
     let place2 = gameScene.game.map[row+1][pos];
     let place3 = 0;
@@ -503,16 +587,20 @@ window.GameScene = class {
         }
     }
 
-    //
+    // allow move
     if ( place1 == 0 && place2 == 0 && place3 == 0 ) {
       gameScene[gameX] = x;
-    } else {
+    }
+    // set coords obstacle
+    else {
       gameScene[gameX] = (pos+3)*(gameScene.cellSize/2)
     }
   }
   // RIGHT || D
   moveRight ( n, player ) {
+    // game scene
     let gameScene = player.game;
+    // chose tank
     if (player.name == "tank1") {
       var gameX = "posX";
       var gameY = "posY";
@@ -525,19 +613,20 @@ window.GameScene = class {
       player.game.directionMove2 = 'right';
       player.game.directionFire2 = 'fireToRight';
     }
-    // new coords
+    // new coord X
     let x = gameScene[gameX] + n;
 
-    //
+    // row arr
     let row = Math.floor( gameScene[gameY] / (gameScene.cellSize/2 ) ) - 2;
+    // position in chosen row from array map
     let pos = Math.floor( (x + gameScene.cellSize) / (gameScene.cellSize/2) ) - 2;
 
-    // obstacles
+    // obstacles on right hand side
     let place1 = gameScene.game.map[row][pos];
     let place2 = gameScene.game.map[row+1][pos];
     let place3 = 0;
 
-
+    // verify place3
     if ( place1 == 0 && place2 == 0 && row < 25) {
       if ( gameScene[gameY]%(gameScene.cellSize/2) == 0 ) {
         place3 = 0
@@ -545,18 +634,19 @@ window.GameScene = class {
         place3 = gameScene.game.map[row+2][pos];
       }
     }
-
+    // allow move
     if ( place1 == 0 && place2 == 0 && place3 == 0 ) {
       gameScene[gameX] = x;
     } else {
       gameScene[gameX] = (pos)*(gameScene.cellSize/2)
     }
   }
-  // end move functions _____________________________________________________________________
 
-  // fire
+  // fire ***********************************************
   initFire ( player ) {
     let gameScene = player.game;
+
+    // set variable in game scene
     if (player.name == "tank1") {
       gameScene.fire = true;
     }
@@ -564,18 +654,34 @@ window.GameScene = class {
       gameScene.fire2 = true;
     }
   }
-  // **************** GAME MAP FUNCTION
+  // super weapons
+  fatality( player ) {
+    // debugger
+    if (player.name == "tank1") {
+      gameScene.fatality = true;
+    }
+    if (player.name == "tank2") {
+      gameScene.fatality2 = true;
+    }
+  }
+  // game map ***********************************************
   gameMap() {
+    // take map from Game class
     this.map = this.game.map;
+    // size
     let cellSize = 40;
     this.cellSize = cellSize;
-    this.game.canvas.width = this.game.map.length * 20 + (cellSize*2);
-    this.game.canvas.height = this.game.map.length * 20 + (cellSize*2);
-    ctx.fillStyle = '#ccc';
+
+    // this.game.canvas.width = this.game.map.length * 20 + (cellSize*2);
+    // this.game.canvas.height = this.game.map.length * 20 + (cellSize*2);
+
+    // filling canvas
+    ctx.fillStyle = '#ddd';
     ctx.fillRect(0, 0, this.game.canvas.width, this.game.canvas.height);
     ctx.fillStyle = '#000';
     ctx.fillRect(cellSize, cellSize, 13 * cellSize, 13 * cellSize);
 
+    // draw necessary walls
     for (var j = 0; j < 26; j++)
     for (var i = 0; i < 26; i++) {
       switch (this.map[j][i]) {
@@ -626,7 +732,7 @@ window.GameScene = class {
     ctx.fillStyle = '#eeeeee';
     ctx.fillRect(x + cellSize / 8, y + cellSize / 8, cellSize / 4, cellSize / 4);
   }
-  // draw emblem
+  // draw special rects
   drawEmblem(x, y,cellSize) {
     // drawing main background
     ctx.fillStyle = '#cccccc';
@@ -641,7 +747,7 @@ window.GameScene = class {
   }
 }
 
-// class Player
+// class Player #########################################################################
 class Player {
   constructor( game ) {
     this.name = 'tank1';
@@ -653,14 +759,11 @@ class Player {
 
   createPlayer (x, y, size) {
     const SIZE = size;
-    // this.size = size;
-    // ctx.beginPath();
-    // ctx.restore();
-    // ctx.fillRect(x, y, SIZE, SIZE);
-    // ctx.fillStyle = "red";
-    // ctx.fill();
+    // default image
     var img = new Image();
     img.src = './images/tank1_d.png';
+
+    // various cases direction move
     if ( this.game.directionMove == 'left' ) {
       img.src = './images/tank1_l.png';
     } else if ( this.game.directionMove == 'right' ) {
@@ -670,12 +773,13 @@ class Player {
     } else if ( this.game.directionMove == 'top' ) {
       img.src = './images/tank1_t.png';
     }
+
     //
-    ctx.drawImage(img, x, y, size, size );
+    ctx.drawImage(img, x, y, SIZE, SIZE );
   }
 }
 
-// class Player2
+// class Player2 #########################################################################
 class Player2 {
   constructor( game ) {
     this.name = 'tank2';
@@ -684,18 +788,14 @@ class Player2 {
     this.cannonball = new Bullet( this )
   }
   createPlayer (x, y, size) {
+    // size tank
     const SIZE = size;
-    // this.size = size;
-    // ctx.beginPath();
-    // ctx.restore();
-    // ctx.fillRect(x, y, SIZE, SIZE);
-    // ctx.fillStyle = "green";
-    // ctx.fill();
 
-    // image
+    // default image
     var img = new Image();
     img.src = './images/tank2_t.png';
 
+    // various cases direction move
     if ( this.game.directionMove2 == 'left' ) {
       img.src = './images/tank2_l.png';
     } else if ( this.game.directionMove2 == "right" ) {
@@ -705,11 +805,13 @@ class Player2 {
     } else if ( this.game.directionMove2 == 'top' ) {
       img.src = './images/tank2_t.png';
     }
+
     //
-    ctx.drawImage(img, x, y, size, size );
+    ctx.drawImage(img, x, y, SIZE, SIZE );
   }
 }
 
+// bullet class #########################################################################
 class Bullet {
   constructor( player ) {
     this.player = player;
@@ -718,7 +820,9 @@ class Bullet {
   }
   renderBullet(player) {
     let gameScene = player.game;
+    // optios object for each tanks
     let options = {}
+    // fill dataset
     if ( player.name == 'tank1' ) {
       options.x = 'posX';
       options.y = 'posY';
@@ -739,11 +843,17 @@ class Bullet {
       options.speed = 'speed2';
       options.axis = 'axis2'
     }
+
+    // verify tank fire
     if ( !player.game[options.fire] ) {return}
-    var x, y, fire, value;
-    // size
+    // sound for shot
+    var shot = document.getElementById('shot');
+    shot.play();
+
+    // size bullet
     options.sizeBall = 3;
-    //
+
+    // direction of the tank & set axis option for fire
     if ( gameScene[options.ballY] == 0 && gameScene[options.ballX] == 0 ) {
 
       if ( gameScene[options.directionFire] == "fireToDown" ) {
@@ -779,6 +889,8 @@ class Bullet {
         gameScene[options.speed] = 5;
       }
     }
+
+    // depending date axis set from speed options object
     if ( gameScene[options.axis] == "y") {
       gameScene[options.ballY] += gameScene[options.speed];
     }
@@ -786,7 +898,7 @@ class Bullet {
       gameScene[options.ballX] += gameScene[options.speed];
     }
 
-    // draw
+    // draw bullet object
     ctx.beginPath();
     ctx.arc(gameScene[options.ballX], gameScene[options.ballY], options.sizeBall, 0, Math.PI*2);
     ctx.fill();
@@ -799,7 +911,12 @@ class Bullet {
       gameScene[options.ballX] = 0;
       gameScene[options.ballY] = 0;
       gameScene[options.fire] = false;
-      gameScene.killed++
+      points1 = gameScene.killed++;
+      addPoint(points1, player.name);
+
+      // TODO repetition source
+      let explosion = document.getElementById('explosion');
+      explosion.play();
     }
 
     // player 2 killed
@@ -809,29 +926,42 @@ class Bullet {
       gameScene[options.ballX] = 0;
       gameScene[options.ballY] = 0;
       gameScene[options.fire] = false;
-      gameScene.killed2++
+      points2 = gameScene.killed2++
+      addPoint(points2, player.name);
+
+      // TODO repetition source
+      let explosion = document.getElementById('explosion');
+      explosion.play();
     }
 
+    // game over if some player kills more 5 times
     if ( gameScene.killed > 5 || gameScene.killed2 > 5 ) {
       alert('win');
       gameScene.game.setScene(ExitScene);
     }
 
-    // obstacles
+    // border canvas element
     if ( gameScene[options.ballY] > (gameScene.game.canvas.height - gameScene.cellSize) || gameScene[options.ballY] < gameScene.cellSize ||  gameScene[options.ballX] < gameScene.cellSize || gameScene[options.ballX] > (gameScene.game.canvas.width - gameScene.cellSize) ) {
       gameScene[options.ballX] = 0;
       gameScene[options.ballY] = 0;
       gameScene[options.fire] = false;
-    } else {
+    }
+    // collisions with walls
+    else {
       // serach row
       let row = Math.floor( (gameScene[options.ballY] - gameScene.cellSize) / (gameScene.cellSize/2) ) || 0;
       if (row > 25) {row = 25}
+      // search position in chosen row
       let pos = Math.floor( (gameScene[options.ballX] - gameScene.cellSize) / (gameScene.cellSize/2) );
+
+      // destroy bullet becouse it is armored wall
       if ( gameScene.game.map[row][pos] == 2 ) {
         gameScene[options.ballX] = 0;
         gameScene[options.ballY] = 0;
         gameScene[options.fire] = false;
       }
+
+      // break down wall
       if ( gameScene.game.map[row][pos] == 1 || gameScene.game.map[row][pos] == 3 ) {
         gameScene.game.map[row][pos] = 0;
         gameScene[options.ballX] = 0;
@@ -839,7 +969,27 @@ class Bullet {
         gameScene[options.fire] = false;
       }
     }
-  } // create
+  } // end create method
 }
 
-var game = new Game();
+class Fatality {
+  constructor () {
+
+  }
+}
+
+// statistic
+function addPoint ( variable, name ) {
+  // select element
+  let board
+  if ( name == 'tank1') {
+    board = document.querySelector('.points1');
+  }
+  if ( name == 'tank2') {
+    board = document.querySelector('.points2');
+  }
+  board.innerText = variable;
+}
+
+// CREATE GAME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+let game = new Game();

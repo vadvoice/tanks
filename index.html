@@ -3,42 +3,65 @@
   <head>
     <title>titlePage</title>
     <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Ravi+Prakash" rel="stylesheet">
   </head>
   <body>
-    <div class="container">
+    <header>
       <h1>Game</h1>
-      <canvas width="600" height="600" moz-opaque>
-        <p>sorry</p><img src="./images/emblem.jpg" id="emblem">
+    </header>
+    <div class="container">
+      <canvas width="600" height="600" moz-opaque><audio src="sounds/engine.wav" id='engine'></audio>
+<audio src="sounds/shot_2.mp3" id='shot'></audio>
+<audio src="sounds/explosion.wav" id='explosion'></audio>
+        <p>sorry</p>
       </canvas>
-      <div class="article">
-        <h2>Control</h2>
+      <div class="content">
+        <h2>Control system</h2>
         <div class="player-control">
-          <div class="info">
-            <p>Control keys</p>
-          </div>
+          <div class="info"></div>
           <div class="keys-wrap">
-            <div class="key" data-info="top">w</div>
-            <div class="key" data-info="bottom">s</div>
-            <div class="key" data-info="left">a</div>
-            <div class="key" data-info="right">d</div>
-            <div class="key" data-info="fire">g</div>
-            <div class="key" data-info="">h</div>
+            <div class="control--wrap">
+              <div class="key" data-info="top">W</div>
+              <div class="key" data-info="left">A</div>
+              <div class="key" data-info="bottom">S</div>
+              <div class="key" data-info="right">D</div>
+            </div>
+            <div class="attak--wrap">
+              <p>attak keys</p>
+              <div class="key" data-info="fire">G</div>
+              <div class="key" data-info="">H</div>
+            </div>
           </div>
         </div>
         <div class="player-control">
-          <div class="info">
-            <p>Control keys</p>
-          </div>
+          <div class="info"></div>
           <div class="keys-wrap">
-            <div class="key" data-info="top">&#8593;</div>
-            <div class="key" data-info="bottom">&#8595;</div>
-            <div class="key" data-info="left">&#8592;</div>
-            <div class="key" data-info="right">&#8594;</div>
-            <div class="key" data-info="fire">k</div>
-            <div class="key" data-info="">l</div>
+            <div class="control--wrap">
+              <div class="key" data-info="top">&#8593;</div>
+              <div class="key" data-info="left">&#8592;</div>
+              <div class="key" data-info="bottom">&#8595;</div>
+              <div class="key" data-info="right">&#8594;</div>
+            </div>
+            <div class="attak--wrap">
+              <p>attak keys</p>
+              <div class="key" data-info="fire">K</div>
+              <div class="key" data-info="">J</div>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="settings-block">
+      <div class="statistic">
+        <p>player 1
+          <div class="points1">0</div>
+        </p>
+        <p>player 2
+          <div class="points2">0</div>
+        </p>
+      </div>
+      <div class="sound-control"></div>
+      <button class="soundtrack">music</button><audio id="soundtrack" class="play-sound" src="sounds/soundtrack_2.wav" autoplay loop></audio>
     </div>
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
