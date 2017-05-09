@@ -252,7 +252,7 @@ window.SelectLevel = class {
     this.levelIndex = 0;
     this.levels = [
       'default',
-      'buttle',
+      'battle',
       'globalIt'
     ];
   }
@@ -276,7 +276,7 @@ window.SelectLevel = class {
     if (this.game.checkKeyPress(13)) {
       switch (this.levelIndex) {
         case 0: this.game.map = defaultMap; this.game.setScene(MenuScene); break;
-        case 1: this.game.map = buttle; this.game.setScene(MenuScene);; break;
+        case 1: this.game.map = battle; this.game.setScene(MenuScene);; break;
         case 2: this.game.map = globalIT; this.game.setScene(MenuScene);; break;
       }
     }
@@ -821,6 +821,7 @@ class Bullet {
   renderBullet(player) {
     let gameScene = player.game;
     // optios object for each tanks
+    // position and direction barrel tank
     let options = {}
     // fill dataset
     if ( player.name == 'tank1' ) {
@@ -978,7 +979,7 @@ class Fatality {
   }
 }
 
-// statistic
+// statistic of raund
 function addPoint ( variable, name ) {
   // select element
   let board
