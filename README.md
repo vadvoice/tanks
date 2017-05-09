@@ -87,6 +87,7 @@ The largest facility that records all the information about the game map coordin
 >
 > outside class features statistics and sound effects
 
+> demo version: https://willfulaversion.github.io/tanks/
 License
 ----
 Copyright
