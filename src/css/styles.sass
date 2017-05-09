@@ -23,6 +23,8 @@ body
   display: flex
   flex-flow: column
   background: #34495E
+  position: relative
+  margin: 0
 header
   text-align: center
   margin-bottom: 2em
@@ -101,9 +103,21 @@ canvas
   align-items: center
   margin-left: 2em
 
-.scoreboard
-  transition: all 1s
-.hit
-  transform: scale(2)
-.after-hit
-  transform: scale(1)
+.settings-block
+  position: absolute
+  top: 0
+  left: -7em
+  +border-radius(5px)
+  +border(2px)
+  transition: all .2s
+  padding: 1em 3em 1em 1em
+  &:hover
+    left: 0
+  .soundtrack
+    padding: .5em 1em
+    font-family: 'Ravi Prakash', cursive
+    font-size: 1.1em
+    text-transform: capitalize
+    +border-radius(5px)
+    &:hover
+      box-shadow: 0 5px 10px #fff

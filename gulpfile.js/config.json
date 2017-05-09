@@ -46,6 +46,15 @@
         "jpg",
         "png"
       ]
+    },
+    "sounds": {
+      "src": "./src/sounds",
+      "dest": "./dest/sounds/",
+      "extensions": [
+        "ogg",
+        "wav",
+        "mp3"
+      ]
     }
   }
 }
