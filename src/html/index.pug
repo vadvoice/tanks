@@ -3,20 +3,21 @@ html(lang="en")
   head
     title titlePage
     link(rel="stylesheet" href="./styles.css")
-    link(href="https://fonts.googleapis.com/css?family=Ravi+Prakash" rel="stylesheet")
+    // fonts
+    link(href="https://fonts.googleapis.com/css?family=Amarante" rel="stylesheet")
   body
     header
       h1 Game
     .container
       canvas(width="600" height="600" moz-opaque)
         <audio src="sounds/engine.wav" id='engine'></audio>
-        <audio src="sounds/shot_2.mp3" id='shot'></audio>
+        <audio src="sounds/shot_1.mp3" id='shot'></audio>
         <audio src="sounds/explosion.wav" id='explosion'></audio>
         p sorry
       .content
         h2 Control system
         .player-control
-          .info
+          .info first player
           .keys-wrap
             .control--wrap
               .key(data-info="top") W
@@ -26,10 +27,10 @@ html(lang="en")
             .attak--wrap
               p attak keys
               .key(data-info="fire") G
-              .key(data-info="") H
+              //- .key(data-info="fatality") H
 
         .player-control
-          .info
+          .info second player
           .keys-wrap
             .control--wrap
               .key(data-info="top") &#8593;
@@ -38,18 +39,28 @@ html(lang="en")
               .key(data-info="right") &#8594;
             .attak--wrap
               p attak keys
-              .key(data-info="fire") K
-              .key(data-info="") J
+              .key(data-info="fire") L
+              //- .key(data-info="fatality") K
+        .player-control
+          .info general keys
+          .keys-wrap
+            .key(data-info="select") ENTER
+            .key(data-info="exit") ESC
     .settings-block
-      .statistic
-        p player 1
-          .points1 0
-        p player 2
-          .points2 0
-      .sound-control
-      button.soundtrack music
-      <audio id="soundtrack" class="play-sound" src="sounds/soundtrack_2.wav" autoplay loop></audio>
-
+      .body__settings
+        .statistic
+          p player 1
+            .points1 0
+          p player 2
+            .points2 0
+        .sounds-control
+          button.sound.music music
+            <audio id="soundtrack" class="play-sound" src="sounds/soundtrack_2.wav" autoplay loop></audio>
+          button.sound.shots sounds
+      .label
+        h1(data-info="S") Settings
+    footer
+      a(href="https://github.com/willfulAversion/tanks").author V
 
 
   script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js")
