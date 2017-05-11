@@ -3,7 +3,8 @@
   <head>
     <title>titlePage</title>
     <link rel="stylesheet" href="./styles.css">
-    <link href="https://fonts.googleapis.com/css?family=Ravi+Prakash" rel="stylesheet">
+    <!-- fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Amarante" rel="stylesheet">
   </head>
   <body>
     <header>
@@ -11,14 +12,14 @@
     </header>
     <div class="container">
       <canvas width="600" height="600" moz-opaque><audio src="sounds/engine.wav" id='engine'></audio>
-<audio src="sounds/shot_2.mp3" id='shot'></audio>
+<audio src="sounds/shot_1.mp3" id='shot'></audio>
 <audio src="sounds/explosion.wav" id='explosion'></audio>
         <p>sorry</p>
       </canvas>
       <div class="content">
         <h2>Control system</h2>
         <div class="player-control">
-          <div class="info"></div>
+          <div class="info">first player</div>
           <div class="keys-wrap">
             <div class="control--wrap">
               <div class="key" data-info="top">W</div>
@@ -29,12 +30,11 @@
             <div class="attak--wrap">
               <p>attak keys</p>
               <div class="key" data-info="fire">G</div>
-              <div class="key" data-info="">H</div>
             </div>
           </div>
         </div>
         <div class="player-control">
-          <div class="info"></div>
+          <div class="info">second player</div>
           <div class="keys-wrap">
             <div class="control--wrap">
               <div class="key" data-info="top">&#8593;</div>
@@ -44,25 +44,40 @@
             </div>
             <div class="attak--wrap">
               <p>attak keys</p>
-              <div class="key" data-info="fire">K</div>
-              <div class="key" data-info="">J</div>
+              <div class="key" data-info="fire">L</div>
             </div>
+          </div>
+        </div>
+        <div class="player-control">
+          <div class="info">general keys</div>
+          <div class="keys-wrap">
+            <div class="key" data-info="select">ENTER</div>
+            <div class="key" data-info="exit">ESC</div>
           </div>
         </div>
       </div>
     </div>
     <div class="settings-block">
-      <div class="statistic">
-        <p>player 1
-          <div class="points1">0</div>
-        </p>
-        <p>player 2
-          <div class="points2">0</div>
-        </p>
+      <div class="body__settings">
+        <div class="statistic">
+          <p>player 1
+            <div class="points1">0</div>
+          </p>
+          <p>player 2
+            <div class="points2">0</div>
+          </p>
+        </div>
+        <div class="sounds-control">
+          <button class="sound music">
+            music<audio id="soundtrack" class="play-sound" src="sounds/soundtrack_2.wav" autoplay loop></audio></button>
+          <button class="sound shots">sounds</button>
+        </div>
       </div>
-      <div class="sound-control"></div>
-      <button class="soundtrack">music</button><audio id="soundtrack" class="play-sound" src="sounds/soundtrack_2.wav" autoplay loop></audio>
+      <div class="label">
+        <h1 data-info="S">Settings</h1>
+      </div>
     </div>
+    <footer><a class="author" href="https://github.com/willfulAversion/tanks">V</a></footer>
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="javascripts.js"></script>

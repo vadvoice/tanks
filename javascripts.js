@@ -8,11 +8,27 @@ let ctx = canvas.getContext('2d');
 var points1 = 0, points2 = 0;
 
 // audio
-var audioBtn = document.querySelector('.soundtrack');
-audioBtn.onclick = function () {
+var audioMusic = document.querySelector('.music');
+audioMusic.onclick = function () {
   let audio = document.getElementById('soundtrack');
   audio.classList.toggle('play-sound');
   audio.className == 'play-sound' ? audio.play() : audio.pause();
+  if ( audio.className == 'play-sound' ) {
+    audioMusic.style.background = '#2ECC71';
+  } else {
+    audioMusic.style.background = '#EF4836';
+  }
+}
+
+var audioShot = document.querySelector('.shots');
+var sounds = true;
+audioShot.onclick = function () {
+  sounds == true ? sounds = false : sounds = true;
+  if ( sounds ) {
+    audioShot.style.background = '#2ECC71';
+  } else {
+    audioShot.style.background = '#EF4836';
+  }
 }
 
 // levels( maps )
@@ -252,7 +268,7 @@ window.SelectLevel = class {
     this.levelIndex = 0;
     this.levels = [
       'default',
-      'buttle',
+      'battle',
       'globalIt'
     ];
   }
@@ -276,7 +292,7 @@ window.SelectLevel = class {
     if (this.game.checkKeyPress(13)) {
       switch (this.levelIndex) {
         case 0: this.game.map = defaultMap; this.game.setScene(MenuScene); break;
-        case 1: this.game.map = buttle; this.game.setScene(MenuScene);; break;
+        case 1: this.game.map = battle; this.game.setScene(MenuScene);; break;
         case 2: this.game.map = globalIT; this.game.setScene(MenuScene);; break;
       }
     }
@@ -344,7 +360,7 @@ window.IntroScene = class {
 
     this.elapsedTime = 0;
     this.bigText = 'Game of the year';
-    this.infoText = 'Game for two people';
+    this.infoText = 'Because I can';
     this.game = game;
   }
   update(dt) {
@@ -406,7 +422,7 @@ window.GameScene = class {
     if (this.game.keys['68']) { this.moveRight( n, this.player ); } // D
     // attak
     if (this.game.keys['71']) { this.initFire( this.player ) } // fire G
-    if (this.game.keys['72']) { this.fatality( this.player ) } // fire H
+    // if (this.game.keys['72']) { this.fatality( this.player ) } // fire H
 
     // listener for second player
     if (this.game.keys['38']) { this.moveTop( n, this.player2 ); } // UP
@@ -414,7 +430,7 @@ window.GameScene = class {
     if (this.game.keys['37']) { this.moveLeft( n, this.player2 ); } // LEFT
     if (this.game.keys['39']) { this.moveRight( n, this.player2 ); } // D
     //
-    if (this.game.keys['76']) { this.initFire( this.player2 ) } // fire 0
+    if (this.game.keys['76']) { this.initFire( this.player2 ) } // fire L
     // go to menu scene
     if (this.game.keys['27']) this.game.setScene(MenuScene); // Back to menu
   }
@@ -821,6 +837,7 @@ class Bullet {
   renderBullet(player) {
     let gameScene = player.game;
     // optios object for each tanks
+    // position and direction barrel tank
     let options = {}
     // fill dataset
     if ( player.name == 'tank1' ) {
@@ -847,8 +864,10 @@ class Bullet {
     // verify tank fire
     if ( !player.game[options.fire] ) {return}
     // sound for shot
-    var shot = document.getElementById('shot');
-    shot.play();
+    if ( sounds ) {
+      var shot = document.getElementById('shot');
+      shot.play();
+    }
 
     // size bullet
     options.sizeBall = 3;
@@ -857,7 +876,7 @@ class Bullet {
     if ( gameScene[options.ballY] == 0 && gameScene[options.ballX] == 0 ) {
 
       if ( gameScene[options.directionFire] == "fireToDown" ) {
-        gameScene[options.axis] = "y";
+        gameScene[options.axis] = "y";``
         // fire to bottom
         gameScene[options.ballX] = gameScene[options.x] + gameScene.cellSize/2;
         gameScene[options.ballY] = gameScene[options.y] + gameScene.cellSize;
@@ -915,8 +934,10 @@ class Bullet {
       addPoint(points1, player.name);
 
       // TODO repetition source
-      let explosion = document.getElementById('explosion');
-      explosion.play();
+      if ( sounds ) {
+        let explosion = document.getElementById('explosion');
+        explosion.play();
+      }
     }
 
     // player 2 killed
@@ -930,8 +951,11 @@ class Bullet {
       addPoint(points2, player.name);
 
       // TODO repetition source
-      let explosion = document.getElementById('explosion');
-      explosion.play();
+      if ( sounds ) {
+        let explosion = document.getElementById('explosion');
+        explosion.play();
+      }
+
     }
 
     // game over if some player kills more 5 times
@@ -978,7 +1002,7 @@ class Fatality {
   }
 }
 
-// statistic
+// statistic of raund
 function addPoint ( variable, name ) {
   // select element
   let board

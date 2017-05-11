@@ -3,7 +3,8 @@ body {
   flex-flow: column;
   background: #34495E;
   position: relative;
-  margin: 0; }
+  margin: 0;
+  min-height: 100vh; }
 
 header {
   text-align: center;
@@ -34,6 +35,11 @@ canvas {
 .player-control {
   margin: 2em 0; }
 
+.info {
+  text-align: center;
+  margin-bottom: 1em;
+  text-transform: capitalize; }
+
 .keys-wrap {
   display: flex;
   flex-flow: row; }
@@ -50,9 +56,10 @@ canvas {
     -ms-border-radius: 5px;
     border-radius: 5px;
     position: relative;
-    transition: all .2s; }
+    transition: all .2s;
+    user-select: none; }
     .keys-wrap .key::after {
-      content: "go to " attr(data-info);
+      content: "go " attr(data-info);
       display: none;
       position: absolute;
       width: 110px;
@@ -102,29 +109,70 @@ canvas {
   margin-left: 2em; }
 
 .settings-block {
+  font-family: 'Amarante', Arial, cursive;
   position: absolute;
-  top: 0;
+  display: flex;
+  flex-flow: row;
+  top: .5em;
   left: -7em;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
   border-radius: 5px;
-  -webkit-border: 2px solid #ddd;
-  -moz-border: 2px solid #ddd;
-  -ms-border: 2px solid #ddd;
-  border: 2px solid #ddd;
+  border-left: 5px solid #00B0FF;
   transition: all .2s;
-  padding: 1em 3em 1em 1em; }
+  padding: 1em 0 1em 1em; }
   .settings-block:hover {
-    left: 0; }
-  .settings-block .soundtrack {
-    padding: .5em 1em;
-    font-family: 'Ravi Prakash', cursive;
-    font-size: 1.1em;
-    text-transform: capitalize;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    border-radius: 5px; }
-    .settings-block .soundtrack:hover {
-      box-shadow: 0 5px 10px #fff; }
+    left: 0;
+    box-shadow: 5px 0 10px #000; }
+    .settings-block:hover .label {
+      color: #00B0FF;
+      opacity: 1;
+      transform: rotate(-90deg);
+      padding: 0;
+      margin: 0; }
+      .settings-block:hover .label h1 {
+        padding: 0;
+        margin: 0; }
+
+.sounds-control {
+  display: flex;
+  flex-flow: column; }
+
+.sound {
+  padding: .5em .5em;
+  font-size: 1.1em;
+  text-transform: capitalize;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background: #446CB3;
+  color: #E4F1FE;
+  margin-top: 5px; }
+  .sound:hover {
+    background: #607D8B; }
+
+.label {
+  display: flex;
+  align-self: center;
+  margin-left: 1em;
+  padding: 0 .5em;
+  transition: transform .5s, opacity .2s;
+  opacity: .6; }
+
+footer {
+  display: flex;
+  flex-flow: row;
+  justify-content: center; }
+  footer .author {
+    font-family: 'Amarante', "PT Sans", cursive;
+    text-decoration: none;
+    color: #ddd;
+    padding: 1em;
+    transition: border .2s;
+    box-sizing: border-box; }
+    footer .author:hover {
+      border-top: 1px solid white; }
