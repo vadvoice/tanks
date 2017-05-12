@@ -1,5 +1,4 @@
 ## Usage
-[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
 - Сlone repository
 - Install npm packages
 ```start
@@ -9,33 +8,19 @@ npm install
 ```build
 gulp
 ```
-## Notable features
-- **CSS:**
-  - [Sass](http://sass-lang.com/)
-  - [Autoprefixer](https://github.com/postcss/autoprefixer) - the most popular [PostCSS](https://github.com/postcss/postcss) plugin
-  - CSS linting with [stylelint](http://stylelint.io/), [doiuse](http://www.doiuse.com/) and [colorguard](https://github.com/SlexAxton/css-colorguard)
-  - Sourcemaps
-- **JS:**
-  - Modular ES6 with [Babel](http://babeljs.io/)
-  - JS linting with [eslint](http://eslint.org/)
-- **Development Mode:**
-  - File Watching and Live Reloading with [BrowserSync](http://www.browsersync.io/)
-  - Sample api middleware
-  - Live css inject without page reload
-- **Production Builds:**
-  - JS and CSS minification
-  - File size reporting
-  - Local production sever for testing
+---
 
 ## Tech
-* [markdown-it](http://dillinger.io/) - parser
-* [node.js](https://nodejs.org/uk/) - evented I/O for the backend
+
+* HTML5 canvas
 * [Gulp](http://gulpjs.com/) - the streaming build system
 * [jQuery](https://jquery.com/) -  JavaScript library
+* [markdown-it](http://dillinger.io/) - parser
+
 ## Structure code
 The game is built in HTML5 tag: `canvas`
-Common object is `class Game` he:
-- Monitors actions of the user
+Common object is `class Game` it:
+- Monitors actions frome user
 - Draws one of 5 scene:
     - `class MenuScene`
     - `class GameScene`
@@ -76,23 +61,22 @@ The largest facility that records all the information about the game map coordin
 - update(dt) - keep up the actions of the players
 
  render method includes class player1, player2 and bullet
- player classes hame property `cannonball` and whene user click on attak button
- GamceScene run method `initFire()` add new property `fire = true`
+ player classes property `cannonball` and whene user click on attak button
+ GamceScene run method `initFire()`
  after draw cannonball and will track its coordinates
  the logic of movement it transform the coordinates of the `cannonball` in place in the array
  if the coordinates outside the playing field or place in the array is not zero
  pick up the ball from the map
+ map redrawn after the destruction of wall elements
 > create game `let game = new Game();`
 > the whole game is available in the onece property `window.game`
 >
-> outside class features statistics and sound effects
+> features: statistics and sound effects
 
 > demo version: https://willfulaversion.github.io/tanks/
+
 License
 ----
-Copyright
-
-**Free Software, Hell Yeah!**
 
 [//]: # ()
 
